@@ -1,0 +1,76 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+C:\Documents and Settings\Owner\×ÀÃæ\TemCtrl\Source\test\USER\test1.1.uvproj
+Project File Date:  05/03/2012
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling usart.c...
+compiling main.c...
+main.c(306): warning:  #177-D: variable "data" was declared but never referenced
+main.c(307): warning:  #177-D: variable "i" was declared but never referenced
+main.c(308): warning:  #177-D: variable "str" was declared but never referenced
+main.c(342): warning:  #1-D: last line of file ends without a newline
+linking...
+Program Size: Code=8300 RO-data=1372 RW-data=36 ZI-data=1380  
+".\Obj\test1.axf" - 0 Error(s), 4 Warning(s).
+Build target 'Target 1'
+linking...
+Program Size: Code=8300 RO-data=1372 RW-data=36 ZI-data=1380  
+".\Obj\test1.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+main.c(89): error:  #167: argument of type "u16 *" is incompatible with parameter of type "int *"
+main.c(288): warning:  #177-D: variable "data" was declared but never referenced
+main.c(289): warning:  #177-D: variable "i" was declared but never referenced
+main.c(290): warning:  #177-D: variable "str" was declared but never referenced
+main.c(325): warning:  #1-D: last line of file ends without a newline
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(89): error:  #167: argument of type "u16 *" is incompatible with parameter of type "int *"
+main.c(309): error:  #167: argument of type "int *" is incompatible with parameter of type "u16 *"
+main.c(288): warning:  #177-D: variable "data" was declared but never referenced
+main.c(289): warning:  #177-D: variable "i" was declared but never referenced
+main.c(290): warning:  #177-D: variable "str" was declared but never referenced
+main.c(325): warning:  #1-D: last line of file ends without a newline
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(309): error:  #167: argument of type "int *" is incompatible with parameter of type "u16 *"
+main.c(288): warning:  #177-D: variable "data" was declared but never referenced
+main.c(289): warning:  #177-D: variable "i" was declared but never referenced
+main.c(290): warning:  #177-D: variable "str" was declared but never referenced
+main.c(325): warning:  #1-D: last line of file ends without a newline
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(288): warning:  #177-D: variable "data" was declared but never referenced
+main.c(289): warning:  #177-D: variable "i" was declared but never referenced
+main.c(290): warning:  #177-D: variable "str" was declared but never referenced
+main.c(325): warning:  #1-D: last line of file ends without a newline
+linking...
+Program Size: Code=8180 RO-data=820 RW-data=32 ZI-data=1024  
+".\Obj\test1.axf" - 0 Error(s), 4 Warning(s).
+Build target 'Target 1'
+compiling usart.c...
+linking...
+Program Size: Code=8184 RO-data=820 RW-data=32 ZI-data=1024  
+".\Obj\test1.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling usart.c...
+linking...
+Program Size: Code=8184 RO-data=820 RW-data=32 ZI-data=1024  
+".\Obj\test1.axf" - 0 Error(s), 0 Warning(s).
+compiling usart.c...
+..\HARDWARE\usart.c - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling usart.c...
+linking...
+Program Size: Code=8168 RO-data=820 RW-data=32 ZI-data=1024  
+".\Obj\test1.axf" - 0 Error(s), 0 Warning(s).
+compiling usart.c...
+..\HARDWARE\usart.c - 0 Error(s), 0 Warning(s).

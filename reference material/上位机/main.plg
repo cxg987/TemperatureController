@@ -1,0 +1,134 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: main - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\hxb\LOCALS~1\Temp\RSP11F.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/main.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"F:\modbusc51最新\main.c"
+]
+Creating command line "cl.exe @C:\DOCUME~1\hxb\LOCALS~1\Temp\RSP11F.tmp" 
+Creating temporary file "C:\DOCUME~1\hxb\LOCALS~1\Temp\RSP120.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/main.pdb" /debug /machine:I386 /out:"Debug/main.exe" /pdbtype:sept 
+".\Debug\main.obj"
+]
+Creating command line "link.exe @C:\DOCUME~1\hxb\LOCALS~1\Temp\RSP120.tmp"
+<h3>Output Window</h3>
+Compiling...
+main.c
+f:\modbusc51最新\stc_cpu.h(7) : error C2061: syntax error : identifier 'ACC'
+f:\modbusc51最新\stc_cpu.h(7) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(7) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(8) : error C2061: syntax error : identifier 'B'
+f:\modbusc51最新\stc_cpu.h(8) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(8) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(9) : error C2061: syntax error : identifier 'PSW'
+f:\modbusc51最新\stc_cpu.h(9) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(9) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(11) : error C2061: syntax error : identifier 'CY'
+f:\modbusc51最新\stc_cpu.h(11) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(11) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(11) : error C2065: 'PSW' : undeclared identifier
+f:\modbusc51最新\stc_cpu.h(12) : error C2061: syntax error : identifier 'AC'
+f:\modbusc51最新\stc_cpu.h(12) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(12) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(13) : error C2061: syntax error : identifier 'F0'
+f:\modbusc51最新\stc_cpu.h(13) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(13) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(14) : error C2061: syntax error : identifier 'RS1'
+f:\modbusc51最新\stc_cpu.h(14) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(14) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(15) : error C2061: syntax error : identifier 'RS0'
+f:\modbusc51最新\stc_cpu.h(15) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(15) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(16) : error C2061: syntax error : identifier 'OV'
+f:\modbusc51最新\stc_cpu.h(16) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(16) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(17) : error C2061: syntax error : identifier 'P'
+f:\modbusc51最新\stc_cpu.h(17) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(17) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(19) : error C2061: syntax error : identifier 'SP'
+f:\modbusc51最新\stc_cpu.h(19) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(19) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(20) : error C2061: syntax error : identifier 'DPL'
+f:\modbusc51最新\stc_cpu.h(20) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(20) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(21) : error C2061: syntax error : identifier 'DPH'
+f:\modbusc51最新\stc_cpu.h(21) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(21) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(25) : error C2061: syntax error : identifier 'PCON'
+f:\modbusc51最新\stc_cpu.h(25) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(25) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(27) : error C2061: syntax error : identifier 'AUXR'
+f:\modbusc51最新\stc_cpu.h(27) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(27) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(29) : error C2061: syntax error : identifier 'AUXR1'
+f:\modbusc51最新\stc_cpu.h(29) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(29) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(56) : error C2061: syntax error : identifier 'WAKE_CLKO'
+f:\modbusc51最新\stc_cpu.h(56) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(56) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(71) : error C2061: syntax error : identifier 'CLK_DIV'
+f:\modbusc51最新\stc_cpu.h(71) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(71) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(73) : error C2061: syntax error : identifier 'BUS_SPEED'
+f:\modbusc51最新\stc_cpu.h(73) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(73) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(96) : error C2061: syntax error : identifier 'IE'
+f:\modbusc51最新\stc_cpu.h(96) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(96) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(98) : error C2061: syntax error : identifier 'EA'
+f:\modbusc51最新\stc_cpu.h(98) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(98) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(98) : error C2065: 'IE' : undeclared identifier
+f:\modbusc51最新\stc_cpu.h(99) : error C2061: syntax error : identifier 'ELVD'
+f:\modbusc51最新\stc_cpu.h(99) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(99) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(100) : error C2061: syntax error : identifier 'EADC'
+f:\modbusc51最新\stc_cpu.h(100) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(100) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(101) : error C2061: syntax error : identifier 'ES'
+f:\modbusc51最新\stc_cpu.h(101) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(101) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(102) : error C2061: syntax error : identifier 'ET1'
+f:\modbusc51最新\stc_cpu.h(102) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(102) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(103) : error C2061: syntax error : identifier 'EX1'
+f:\modbusc51最新\stc_cpu.h(103) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(103) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(104) : error C2061: syntax error : identifier 'ET0'
+f:\modbusc51最新\stc_cpu.h(104) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(104) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(105) : error C2061: syntax error : identifier 'EX0'
+f:\modbusc51最新\stc_cpu.h(105) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(105) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(107) : error C2061: syntax error : identifier 'IE2'
+f:\modbusc51最新\stc_cpu.h(107) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(107) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(110) : error C2061: syntax error : identifier 'IP'
+f:\modbusc51最新\stc_cpu.h(110) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(110) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(112) : error C2061: syntax error : identifier 'PPCA'
+f:\modbusc51最新\stc_cpu.h(112) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(112) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(112) : error C2065: 'IP' : undeclared identifier
+f:\modbusc51最新\stc_cpu.h(113) : error C2061: syntax error : identifier 'PLVD'
+f:\modbusc51最新\stc_cpu.h(113) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(113) : error C2513: '/*global*/ ' : no variable declared before '='
+f:\modbusc51最新\stc_cpu.h(114) : error C2061: syntax error : identifier 'PADC'
+f:\modbusc51最新\stc_cpu.h(114) : error C2059: syntax error : ';'
+f:\modbusc51最新\stc_cpu.h(114) : fatal error C1003: error count exceeds 100; stopping compilation
+Error executing cl.exe.
+
+
+
+<h3>Results</h3>
+main.exe - 102 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

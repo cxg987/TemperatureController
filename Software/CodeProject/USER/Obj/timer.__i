@@ -1,0 +1,1 @@
+-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\ST\STM32F10x" -o ".\Obj\timer.o" --omf_browse ".\Obj\timer.crf" --depend ".\Obj\timer.d" "..\HARDWARE\timer.c"

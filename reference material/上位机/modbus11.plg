@@ -1,0 +1,714 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+C:\Documents and Settings\hxb\桌面\上位机\modbus.uvproj
+Project File Date:  10/08/2011
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(236): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "modbus11"...
+"modbus11" - 0 Error(s), 10 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(236): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "swj"...
+"swj" - 0 Error(s), 10 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(236): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "swj"...
+"swj" - 0 Error(s), 10 Warning(s).
+compiling main.c...
+MAIN.C(236): warning C280: 'len': unreferenced local variable
+main.c - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "swj"...
+"swj" - 0 Error(s), 9 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(236): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "swj"...
+"swj" - 0 Error(s), 10 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(236): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "swj"...
+"swj" - 0 Error(s), 10 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(236): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "swj"...
+"swj" - 0 Error(s), 10 Warning(s).
+compiling main.c...
+MAIN.C(232): warning C280: 'len': unreferenced local variable
+main.c - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "swj"...
+"swj" - 0 Error(s), 9 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(232): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "swj"...
+"swj" - 0 Error(s), 10 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(232): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "swj"...
+"swj" - 0 Error(s), 10 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(232): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "swj"...
+"swj" - 0 Error(s), 10 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(232): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "swj"...
+"swj" - 0 Error(s), 10 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(232): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "swj"...
+"swj" - 0 Error(s), 10 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(232): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  AD_INIT
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0058H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0193H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01C5H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 01F7H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _AD_WORK
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 0229H
+Program Size: data=9.4 xdata=561 code=6456
+creating hex file from "swj"...
+"swj" - 0 Error(s), 10 Warning(s).
+compiling AD.c...
+AD.c - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+Program Size: data=9.4 xdata=561 code=7665
+creating hex file from "swj"...
+"swj" - 0 Error(s), 2 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(232): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+compiling AD.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+Program Size: data=9.4 xdata=561 code=7665
+creating hex file from "swj"...
+"swj" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(232): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+compiling AD.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+Program Size: data=9.4 xdata=561 code=7665
+creating hex file from "swj"...
+"swj" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(232): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+compiling AD.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+Program Size: data=9.4 xdata=561 code=7665
+creating hex file from "swj"...
+"swj" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(232): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+compiling AD.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+Program Size: data=9.4 xdata=561 code=7665
+creating hex file from "swj"...
+"swj" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(232): warning C280: 'len': unreferenced local variable
+compiling uart.c...
+compiling PWM NEW.c...
+compiling AD.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SAVECOMBUF?MAIN
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SEND2?UART
+    CALLER1: ?PR?T0_IRQ?MAIN
+    CALLER2: ?C_C51STARTUP
+Program Size: data=9.4 xdata=561 code=7665
+creating hex file from "swj"...
+"swj" - 0 Error(s), 3 Warning(s).

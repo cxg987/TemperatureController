@@ -1,0 +1,74 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+C:\Documents and Settings\Owner\×ÀÃæ\TemCtrl\Source\test\USER\test1.1.uvproj
+Project File Date:  05/03/2012
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+main.c(324): warning:  #177-D: variable "data" was declared but never referenced
+main.c(325): warning:  #177-D: variable "i" was declared but never referenced
+main.c(326): warning:  #177-D: variable "str" was declared but never referenced
+main.c(368): warning:  #1-D: last line of file ends without a newline
+linking...
+Program Size: Code=8230 RO-data=790 RW-data=20 ZI-data=1068  
+".\Obj\test1.axf" - 0 Error(s), 4 Warning(s).
+compiling main.c...
+main.c(324): warning:  #177-D: variable "data" was declared but never referenced
+main.c(325): warning:  #177-D: variable "i" was declared but never referenced
+main.c(326): warning:  #177-D: variable "str" was declared but never referenced
+main.c(368): warning:  #1-D: last line of file ends without a newline
+main.c - 0 Error(s), 4 Warning(s).
+Load "C:\\Documents and Settings\\Owner\\×ÀÃæ\\TemCtrl\\Source\\test\\USER\\Obj\\test1.AXF" 
+Set JLink Project File to "C:\Documents and Settings\Owner\×ÀÃæ\TemCtrl\Source\test\USER\JLinkSettings.ini"
+ 
+JLink info:
+------------
+DLL: V4.24b, compiled Feb 22 2011 20:47:17
+Firmware: J-Link ARM V8 compiled Sep  2 2011 17:54:36
+Hardware: V8.00
+S/N : 20090626 
+Feature(s) : RDI,FlashDL,FlashBP,JFlash,GDBFull 
+ 
+* JLink Info: TotalIRLen = 9, IRPrint = 0x0011
+* JLink Info: Found Cortex-M3 r1p1, Little endian.
+* JLink Info: TPIU fitted.
+* JLink Info:   FPUnit: 6 code (BP) slots and 2 literal slots
+ROMTableAddr = 0xE00FF003
+* JLink Info: TotalIRLen = 9, IRPrint = 0x0011
+* JLink Info: Found Cortex-M3 r1p1, Little endian.
+* JLink Info: TPIU fitted.
+* JLink Info:   FPUnit: 6 code (BP) slots and 2 literal slots
+* JLink Info: TotalIRLen = 9, IRPrint = 0x0011
+* JLink Info: Found Cortex-M3 r1p1, Little endian.
+* JLink Info: TPIU fitted.
+* JLink Info:   FPUnit: 6 code (BP) slots and 2 literal slots
+ 
+Target info:
+------------
+Device: STM32F102R8
+VTarget = 3.293V
+State of Pins: 
+TCK: 1, TDI: 0, TDO: 0, TMS: 0, TRES: 1, TRST: 1
+Hardware-Breakpoints: 6
+Software-Breakpoints: 2048
+Watchpoints:          4
+JTAG speed: 100 kHz
+ 
+Erase Done.
+Programming Done.
+Verify OK.
+Build target 'Target 1'
+compiling usart.c...
+linking...
+Program Size: Code=8230 RO-data=790 RW-data=20 ZI-data=1068  
+".\Obj\test1.axf" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+main.c(324): warning:  #177-D: variable "data" was declared but never referenced
+main.c(325): warning:  #177-D: variable "i" was declared but never referenced
+main.c(326): warning:  #177-D: variable "str" was declared but never referenced
+main.c(368): warning:  #1-D: last line of file ends without a newline
+main.c - 0 Error(s), 4 Warning(s).

@@ -1,0 +1,29 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+F:\cxg\TemCtrl\Source\test\USER\test1.1.uvproj
+Project File Date:  05/16/2012
+
+<h2>Output:</h2>
+Build target 'Target 1'
+assembling STM32F10x.s...
+compiling delay.c...
+compiling sys.c...
+compiling usart.c...
+compiling ADC.c...
+..\HARDWARE\ADC.c(72): warning:  #223-D: function "USART1_SendByte" declared implicitly
+..\HARDWARE\ADC.c(76): warning:  #223-D: function "USART1_TXword" declared implicitly
+..\HARDWARE\ADC.c(132): warning:  #223-D: function "USART1_TXword" declared implicitly
+..\HARDWARE\ADC.c(140): warning:  #223-D: function "USART1_TXword" declared implicitly
+compiling main.c...
+main.c(288): warning:  #177-D: variable "data" was declared but never referenced
+main.c(289): warning:  #177-D: variable "i" was declared but never referenced
+main.c(290): warning:  #177-D: variable "str" was declared but never referenced
+main.c(325): warning:  #1-D: last line of file ends without a newline
+linking...
+.\Obj\test1.axf: Error: L6200E: Symbol ADC_IRQHandler multiply defined (by main.o and adc.o).
+.\Obj\test1.axf: Error: L6200E: Symbol AD_value multiply defined (by main.o and adc.o).
+.\Obj\test1.axf: Error: L6200E: Symbol ADC1_Init multiply defined (by main.o and adc.o).
+Target not created

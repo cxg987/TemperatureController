@@ -1,0 +1,4 @@
+--cpu Cortex-M3 ".\obj\stm32f10x.o" ".\obj\delay.o" ".\obj\sys.o" ".\obj\usart.o" ".\obj\init.o" ".\obj\main.o" ".\obj\stm32f10x_flash.o" --strict --scatter ".\Obj\test1.sct" 
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols 
+--info sizes --info totals --info unused --info veneers 
+ --list ".\Lis\test1.map" -o ".\Obj\test1.axf"

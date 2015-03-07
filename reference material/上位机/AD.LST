@@ -1,0 +1,91 @@
+C51 COMPILER V7.06   AD                                                                    10/12/2011 19:24:59 PAGE 1   
+
+
+C51 COMPILER V7.06, COMPILATION OF MODULE AD
+OBJECT MODULE PLACED IN AD.OBJ
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE AD.c LARGE OPTIMIZE(4,SPEED) BROWSE DEBUG OBJECTEXTEND
+
+stmt level    source
+
+   1          #include <STC_CPU.H>
+   2          #include"intrins.h"
+   3          #include"math.h"
+   4          #include <String.h>
+   5          #include"uart.h"
+   6          #include"AD.h"
+   7          void AD_init();
+   8          void AD_work( BYTE val,BYTE channel);
+   9          sbit REL0 = P2^4;
+  10          sbit REL1 = P2^5;
+  11          extern u16 g_usRegister[66]; 
+  12          BYTE g_ucChn; // 当前采集的通道
+  13          
+  14          //------------------------------------------------------------------------------
+  15          void AD_init()
+  16          {
+  17   1              P1ASF=0x03;         //P1.0和P1.1口作为模拟功能A/D使用
+  18   1          AUXR1|=0x04;
+  19   1              ADC_RES=0;         //清零转换结果寄存器高2位
+  20   1              ADC_RESL=0;       //清零转换结果寄存器低8位
+  21   1              ADC_CONTR=0x80;  //开启AD电源
+  22   1              IE |= 0xa0;      //允许AD中断
+  23   1              g_ucChn = 0;
+  24   1              delay(2);       //等待1ms，让AD电源稳定
+  25   1              ADC_CONTR = 0x88 | g_ucChn;
+  26   1      }       
+  27          
+  28          void adc_isr() interrupt 5 using 1
+  29          {
+  30   1              ADC_CONTR &= !ADC_FLAG;
+  31   1              g_usRegister[24+g_ucChn]= (u16)ADC_RES<<10+(u16)ADC_RESL;
+  32   1          if (g_ucChn == 0 ) g_ucChn = 1;
+  33   1              else g_ucChn = 0;
+  34   1              ADC_CONTR = 0x88| g_ucChn;
+  35   1      }
+  36          
+  37          /*unsigned int AD_get(BYTE channel)
+  38          {
+  39             ADC_CONTR=0x88|channel;    //开启AD转换1000 1000 即POWER SPEED1 SPEED0 ADC_FLAG   ADC_START CHS2 CHS1 C
+             -HS0 
+  40             _nop_(); 
+  41             _nop_(); 
+  42             _nop_();
+  43             _nop_();                  //要经过4个CPU时钟的延时，其值才能够保证被设置进ADC_CONTR 寄存器
+  44             while(!(ADC_CONTR&0x10));    //等待转换完成
+  45             ADC_CONTR&=0xe7;      //关闭AD转换，ADC_FLAG位由软件清0
+  46             return((u16)ADC_RES<<10+(u16)ADC_RESL);   //返回AD转换完成的10位数据(16进制)
+  47          }
+  48             */
+  49          void AD_work( BYTE val,BYTE channel)
+  50          {
+  51   1              u16 AD_val;
+  52   1              u16 js_vol,chazhi;
+  53   1              AD_val=g_usRegister[24+channel];//
+  54   1              js_vol= val >> 2;
+C51 COMPILER V7.06   AD                                                                    10/12/2011 19:24:59 PAGE 2   
+
+  55   1              if(AD_val>js_vol)                                                       
+  56   1              chazhi=AD_val-js_vol;
+  57   1              else
+  58   1              chazhi=js_vol-AD_val;
+  59   1      
+  60   1              if(chazhi>100)
+  61   1              {
+  62   2                       REL0=0;
+  63   2              }
+  64   1      }
+  65          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    206    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =      1       2
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

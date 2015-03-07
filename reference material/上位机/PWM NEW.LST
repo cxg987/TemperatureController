@@ -1,0 +1,60 @@
+C51 COMPILER V7.06   PWM_NEW                                                               10/12/2011 19:24:59 PAGE 1   
+
+
+C51 COMPILER V7.06, COMPILATION OF MODULE PWM_NEW
+OBJECT MODULE PLACED IN PWM NEW.OBJ
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE PWM NEW.c LARGE OPTIMIZE(4,SPEED) BROWSE DEBUG OBJECTEXTEND
+
+stmt level    source
+
+   1          
+   2          /* 左面、右面运行控制（快慢速控制，快慢速时间） */
+   3          #include <stc_cpu.H>
+   4          #include <intrins.h>
+   5          #include <stdio.h>
+   6          #include <PWM_NEW.h>
+   7          
+   8          
+   9          #define U8 unsigned char
+  10          #define U16 unsigned int
+  11          
+  12          
+  13          // pwm初始化
+  14          
+  15          void  Pwm_Init()
+  16          {
+  17   1              CCON = 0;                  //清所有中断标志，timer stop running
+  18   1              CMOD = 0X02;       //set PCA/PWM timer clock source as SYCCLK/2
+  19   1      
+  20   1              CL = 0;            // set PCA base timer
+  21   1              CH = 0;
+  22   1      
+  23   1              //CCAP0H = CCAP0L = 0x80;                //PWM0 占空比50%
+  24   1              CCAPM0 = 0X42;                   //PWM0 使能
+  25   1      
+  26   1              //CCAP1H = CCAP1L = 0x80;            //PWM1 占空比50%
+  27   1              CCAPM1 = 0X42;                   //PWM1 使能
+  28   1      
+  29   1          CR = 1;                                      //      start timer
+  30   1      
+  31   1      }
+  32          
+  33          
+  34          
+  35          
+  36          
+  37          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     19    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

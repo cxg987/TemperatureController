@@ -1,0 +1,461 @@
+C51 COMPILER V7.06   UART                                                                  10/12/2011 19:24:59 PAGE 1   
+
+
+C51 COMPILER V7.06, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN uart.OBJ
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE uart.c LARGE OPTIMIZE(4,SPEED) BROWSE DEBUG OBJECTEXTEND
+
+stmt level    source
+
+   1          #include "STC_CPU.H"
+   2          #include "main.h"
+   3          #include "uart.h"
+   4          #include <String.h>
+   5          
+   6          #define S2RI  0x01
+   7          #define S2TI  0x02
+   8          #define S2RB8 0x04
+   9          #define S2TB8 0x08
+  10          
+  11          sbit REL = P2^0;
+  12          sbit DEL = P2^1;
+  13          sbit RER = P2^2;
+  14          sbit DER = P2^3;
+  15          //p2.0=0，接收  p2.1  =1 发送  左面
+  16          //p2.2=0 ，接收  p2.3 =1  发送 
+  17          
+  18          BYTE g_byT1buf[T1BUF_MAX_LEN];
+  19          BYTE g_byR1buf[R1BUF_MAX_LEN];
+  20          BYTE g_byBegT1buf,g_byEndT1buf,g_byBegR1buf,g_byEndR1buf;
+  21          
+  22          BYTE g_byT2buf[T2BUF_MAX_LEN];
+  23          BYTE g_byR2buf[R2BUF_MAX_LEN];
+  24          BYTE g_byBegT2buf,g_byEndT2buf,g_byBegR2buf,g_byEndR2buf;
+  25          
+  26          BYTE rcv_flag,snd_flag,rcv_flag2,snd_flag2;
+  27          BYTE Receive[20],Receive2[20];
+  28          BYTE rcv_counter,rcv_counter2;  
+  29          BYTE rcv_length,rcv_length2;
+  30          
+  31          void rcv_handle2(BYTE rcv);
+  32          BYTE check_modbus(void);
+  33          BYTE t1_rcvtimeout,t2_rcvtimeout;
+  34          
+  35          
+  36          
+  37          void InitUart()
+  38          {
+  39   1              AUXR1 &= 0X7F;          //UART is in P3 port.
+  40   1      
+  41   1              AUXR  &= (~0X04);       //BRT clock is the fosc dived by 12.
+  42   1      //      AUXR  |= 0X11;          //BRT is used as baud generator and start BRT.
+  43   1              AUXR |=0x1D;
+  44   1      
+  45   1              PCON  &= 0X3F;          //SMOD0=0;
+  46   1              PCON  |= 0X80;          //SMOD=1
+  47   1              SCON   = 0x50;          //MODE 1(8 BITS, NO P), RECEIVING PERMIT.
+  48   1      
+  49   1              BRT    = BRT_INI;       //2MHz, 9615.4bpm.
+  50   1      
+  51   1      //#if (FOSC/12/16/(256-BRT_INI)-BUAD_RATE)/(BUAD_RATE/100) >= 3
+  52   1              //BUAD ERROR IS TOO LARGER!
+  53   1      //#endif
+  54   1              /*
+  55   1              AUXR1 &= 0x7f;  // UART处于1T工作模式
+C51 COMPILER V7.06   UART                                                                  10/12/2011 19:24:59 PAGE 2   
+
+  56   1              AUXR |=0x1D;
+  57   1              PCON &=0x3f;
+  58   1              PCON |=0x80;
+  59   1              SCON =0x50;
+  60   1      
+  61   1              BRT =BRT_INI; //6MHz，9615.4bpm.  */
+  62   1      
+  63   1              ES = 1;
+  64   1              EA = 1;
+  65   1              g_byBegT1buf = 0;
+  66   1              g_byEndT1buf = 0;
+  67   1              g_byBegR1buf = 0;
+  68   1              g_byEndR1buf = 0;
+  69   1      }
+  70          
+  71          void InitUart2()
+  72          {
+  73   1                
+  74   1         
+  75   1              AUXR1 |=0x10;
+  76   1      
+  77   1              //BRT clock is the fosc dived by 12.
+  78   1              AUXR  |= 0X19;          //BRT is used as baud generator and start BRT.
+  79   1                      
+  80   1              PCON  |= 0X80;          //SMOD=1
+  81   1              S2CON   |= 0x50;                //MODE 1(8 BITS, NO P), RECEIVING PERMIT.
+  82   1      
+  83   1              BRT    = BRT_INI;       //2MHz, 9615.4bpm. 
+  84   1      
+  85   1       //#if (FOSC/12/16/(256-BRT_INI)-BUAD_RATE)/(BUAD_RATE/100) >= 3
+  86   1              //BUAD ERROR IS TOO LARGER!
+  87   1              /*
+  88   1              AUXR1 |= 0x10;
+  89   1              AUXR |= 0x1d;
+  90   1              PCON |=0x80;
+  91   1              S2CON |=0x50;
+  92   1      
+  93   1              BRT = BRT_INI;  */
+  94   1      
+  95   1              IE2 |= 0x01;
+  96   1      
+  97   1              EA = 1;
+  98   1      
+  99   1              g_byBegT2buf = 0;
+ 100   1              g_byEndT2buf = 0;
+ 101   1              g_byBegR2buf = 0;
+ 102   1              g_byEndR2buf = 0;
+ 103   1      }
+ 104          
+ 105          void Uart() interrupt 4
+ 106          {       
+ 107   1              if(RI)
+ 108   1              {
+ 109   2                      RI = 0;
+ 110   2                      Receive[rcv_flag++] = SBUF;     
+ 111   2                              
+ 112   2              }
+ 113   1      
+ 114   1              if(TI)
+ 115   1              {       
+ 116   2                      TI = 0;
+ 117   2                      if(g_byBegT1buf<g_byEndT1buf)
+C51 COMPILER V7.06   UART                                                                  10/12/2011 19:24:59 PAGE 3   
+
+ 118   2                      {
+ 119   3                              SBUF = g_byT1buf[g_byBegT1buf++];
+ 120   3                      }
+ 121   2                      else
+ 122   2                      {
+ 123   3                              g_byBegT1buf=g_byEndT1buf=0;
+ 124   3                              //RE1=0;//串口1为232
+ 125   3                      }  
+ 126   2              }
+ 127   1      }
+ 128          
+ 129          
+ 130          
+ 131          void Uart2() interrupt 8
+ 132          { 
+ 133   1              if(S2CON&S2RI)
+ 134   1              {
+ 135   2                      S2CON &= ~S2RI;
+ 136   2                      Receive2[rcv_flag2++] = S2BUF;
+ 137   2                      t2_rcvtimeout = 3;      
+ 138   2              }
+ 139   1      
+ 140   1              if(S2CON & S2TI)
+ 141   1              {
+ 142   2                      S2CON &= ~S2TI;
+ 143   2                      if(g_byBegT2buf<g_byEndT2buf)
+ 144   2                      {
+ 145   3                              S2BUF = g_byT2buf[g_byBegT2buf++];
+ 146   3                      }
+ 147   2                      else
+ 148   2                      {
+ 149   3                              //delay(2);
+ 150   3                              if (g_byT2buf[g_byEndT2buf] == 0x10)
+ 151   3                              {
+ 152   4                                      REL=0;
+ 153   4                                      DEL=0;
+ 154   4                                      RER=1;
+ 155   4                                      DER=0;
+ 156   4                              }
+ 157   3                              if (g_byT2buf[g_byEndT2buf] == 0x20)
+ 158   3                              {
+ 159   4                                      RER=0;
+ 160   4                                      DER=0;  //这时要根据当前是往左、右那个发送的命令，来决定从哪里接收。
+ 161   4                                      REL=1;
+ 162   4                                      DEL=0;
+ 163   4                              }
+ 164   3                              g_byBegT2buf=g_byEndT2buf=0;
+ 165   3                      }
+ 166   2              }
+ 167   1      }
+ 168          
+ 169          BYTE DealRcvBuffer(BYTE uartNumber)
+ 170          {
+ 171   1              BYTE syn_flag=0;
+ 172   1              BYTE sum=0, jiaoyan=0, i=0;
+ 173   1              BYTE tempbuf[20];
+ 174   1              BYTE RecvBuf[20];
+ 175   1              BYTE rcvCNT = 0;
+ 176   1              BYTE rcv;
+ 177   1      
+ 178   1              if (uartNumber == 1) 
+ 179   1              {
+C51 COMPILER V7.06   UART                                                                  10/12/2011 19:24:59 PAGE 4   
+
+ 180   2                      memcpy(RecvBuf,Receive,20);
+ 181   2                      rcvCNT = rcv_flag;
+ 182   2                      if (RecvBuf[0] != 0xff)  //如果开头不是0xff,那就返回吧
+ 183   2                      {
+ 184   3                              t1_rcvtimeout = 0;
+ 185   3                              return 0;
+ 186   3                      }
+ 187   2              }
+ 188   1              else
+ 189   1              {
+ 190   2                      memcpy(RecvBuf,Receive2,20);
+ 191   2                      rcvCNT = rcv_flag2;
+ 192   2                      if (RecvBuf[0] != 0xff)  //如果开头不是0xff,那就返回吧
+ 193   2                      {
+ 194   3                              t2_rcvtimeout = 0;
+ 195   3                              return 0;
+ 196   3                      }
+ 197   2              }
+ 198   1      
+ 199   1              memset(tempbuf,0,20);
+ 200   1              rcv_counter = 0;
+ 201   1      
+ 202   1              for (i = 1 ; i < rcvCNT ; i++)
+ 203   1              {
+ 204   2                      rcv = RecvBuf[i];
+ 205   2                      if(rcv!=0xfe)
+ 206   2                      {
+ 207   3                              if(rcv==0xfd)
+ 208   3                              {
+ 209   4                                      syn_flag=1;
+ 210   4                              }
+ 211   3                              else
+ 212   3                              {
+ 213   4                                      if(syn_flag==0)
+ 214   4                                              tempbuf[rcv_counter++]=rcv;
+ 215   4                                      else
+ 216   4                                      {
+ 217   5                                              tempbuf[rcv_counter++]=rcv+0xfd;
+ 218   5                                              syn_flag=0;
+ 219   5                                      }
+ 220   4                              }                                       
+ 221   3                      }
+ 222   2                      else
+ 223   2                      {
+ 224   3                              if(tempbuf[rcv_counter-2]==0xfd)
+ 225   3                              {
+ 226   4                                      jiaoyan=tempbuf[rcv_counter-1]+0xfd;
+ 227   4                                      rcv_counter -= 2;
+ 228   4                              }
+ 229   3                              else
+ 230   3                              {
+ 231   4                                      jiaoyan=tempbuf[rcv_counter-1];
+ 232   4                                      rcv_counter--;
+ 233   4                              }
+ 234   3                      }
+ 235   2              }
+ 236   1      
+ 237   1              for(i=0;i<rcv_counter;i++)
+ 238   1              {
+ 239   2                      sum += tempbuf[i];
+ 240   2              }
+ 241   1      
+C51 COMPILER V7.06   UART                                                                  10/12/2011 19:24:59 PAGE 5   
+
+ 242   1              if(jiaoyan==sum)
+ 243   1              {
+ 244   2                      if (uartNumber == 1)
+ 245   2                              memcpy(g_byR1buf,tempbuf,20);
+ 246   2                      else
+ 247   2                              memcpy(g_byR2buf,tempbuf,20);
+ 248   2                      return 1;
+ 249   2              }
+ 250   1              else
+ 251   1              {
+ 252   2                      return 0;
+ 253   2              }
+ 254   1      }
+ 255          
+ 256          
+ 257          void rcv_handle2(BYTE rcv)
+ 258          {
+ 259   1              BYTE bRet=0;
+ 260   1              bRet = DealRcvBuffer(2); //
+ 261   1              if (bRet == 1)
+ 262   1              {
+ 263   2                      snd_flag2 = 1;
+ 264   2                      t2_rcvtimeout = 0;
+ 265   2              }
+ 266   1              else 
+ 267   1                      snd_flag2 = 0;
+ 268   1      }
+*** WARNING C280 IN LINE 257 OF UART.C: 'rcv': unreferenced local variable
+ 269          
+ 270          
+ 271          void Send1(BYTE* buf, BYTE len)
+ 272          {
+ 273   1          BYTE i=0, j=0;
+ 274   1      
+ 275   1              g_byT1buf[0]=0xff;
+ 276   1              for(i=0;i<len;i++)
+ 277   1              {
+ 278   2                      g_byT1buf[j++]=buf[i];
+ 279   2              }
+ 280   1              g_byEndT1buf=j;
+ 281   1      
+ 282   1              g_byBegT1buf=0;
+ 283   1              SBUF=g_byT1buf[g_byBegT1buf++];         
+ 284   1      }
+ 285          
+ 286          void Send2(BYTE* buf, BYTE len,BYTE channel)
+ 287          {
+ 288   1          BYTE i=0, j=1, sum=0;
+ 289   1      
+ 290   1              for(i=0;i<len;i++)
+ 291   1              {
+ 292   2                      sum += buf[i];
+ 293   2              }
+ 294   1      
+ 295   1              g_byT2buf[0]=0xff;
+ 296   1              for(i=0;i<len;i++)
+ 297   1              {
+ 298   2                      if(buf[i]<0xfd)
+ 299   2                              g_byT2buf[j++]=buf[i];
+ 300   2                      else
+ 301   2                      {
+ 302   3                              g_byT2buf[j++]=0xfd;
+C51 COMPILER V7.06   UART                                                                  10/12/2011 19:24:59 PAGE 6   
+
+ 303   3                              g_byT2buf[j++]=buf[i]-0xfd;
+ 304   3                      }       
+ 305   2              }
+ 306   1      
+ 307   1              if(sum<0xfd)
+ 308   1                      g_byT2buf[j++]=sum;
+ 309   1              else
+ 310   1              {
+ 311   2                      g_byT2buf[j++]=0xfd;
+ 312   2                      g_byT2buf[j++]=sum-0xfd;
+ 313   2              }
+ 314   1      
+ 315   1              g_byT2buf[j++]=0xfe;
+ 316   1              g_byEndT2buf=j;
+ 317   1          if(channel==0)      //发到左面
+ 318   1              {
+ 319   2                      RER=1;
+ 320   2                      DER=0;
+ 321   2                      REL=1;
+ 322   2                      DEL=1;
+ 323   2                      g_byT2buf[j++] = 0x10;  //这是往左边发的         
+ 324   2              }
+ 325   1              else
+ 326   1              {
+ 327   2                      REL=1;
+ 328   2                      DEL=0;
+ 329   2                      RER=1;
+ 330   2                      DER=1;   
+ 331   2                      g_byT2buf[j++] = 0x20; //右边
+ 332   2              }  
+ 333   1              g_byBegT2buf=0;
+ 334   1              S2BUF=g_byT2buf[g_byBegT2buf++];                
+ 335   1      }
+ 336          
+ 337          /***********************CRC校验*************************/ 
+ 338          // CRC 高位字节值表 
+ 339          unsigned char code auchCRCHi[] = { 
+ 340          0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81,
+ 341          0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
+ 342          0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01,
+ 343          0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
+ 344          0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81,
+ 345          0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
+ 346          0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01,
+ 347          0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
+ 348          0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81,
+ 349          0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
+ 350          0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01,
+ 351          0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+ 352          0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81,
+ 353          0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
+ 354          0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01,
+ 355          0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+ 356          0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81,
+ 357          0x40
+ 358          } ; 
+ 359          // CRC低位字节值表 
+ 360          unsigned char code auchCRCLo[] = { 
+ 361          0x00, 0xC0, 0xC1, 0x01, 0xC3, 0x03, 0x02, 0xC2, 0xC6, 0x06, 0x07, 0xC7, 0x05, 0xC5, 0xC4,
+ 362          0x04, 0xCC, 0x0C, 0x0D, 0xCD, 0x0F, 0xCF, 0xCE, 0x0E, 0x0A, 0xCA, 0xCB, 0x0B, 0xC9, 0x09,
+ 363          0x08, 0xC8, 0xD8, 0x18, 0x19, 0xD9, 0x1B, 0xDB, 0xDA, 0x1A, 0x1E, 0xDE, 0xDF, 0x1F, 0xDD,
+ 364          0x1D, 0x1C, 0xDC, 0x14, 0xD4, 0xD5, 0x15, 0xD7, 0x17, 0x16, 0xD6, 0xD2, 0x12, 0x13, 0xD3,
+C51 COMPILER V7.06   UART                                                                  10/12/2011 19:24:59 PAGE 7   
+
+ 365          0x11, 0xD1, 0xD0, 0x10, 0xF0, 0x30, 0x31, 0xF1, 0x33, 0xF3, 0xF2, 0x32, 0x36, 0xF6, 0xF7,
+ 366          0x37, 0xF5, 0x35, 0x34, 0xF4, 0x3C, 0xFC, 0xFD, 0x3D, 0xFF, 0x3F, 0x3E, 0xFE, 0xFA, 0x3A,
+ 367          0x3B, 0xFB, 0x39, 0xF9, 0xF8, 0x38, 0x28, 0xE8, 0xE9, 0x29, 0xEB, 0x2B, 0x2A, 0xEA, 0xEE,
+ 368          0x2E, 0x2F, 0xEF, 0x2D, 0xED, 0xEC, 0x2C, 0xE4, 0x24, 0x25, 0xE5, 0x27, 0xE7, 0xE6, 0x26,
+ 369          0x22, 0xE2, 0xE3, 0x23, 0xE1, 0x21, 0x20, 0xE0, 0xA0, 0x60, 0x61, 0xA1, 0x63, 0xA3, 0xA2,
+ 370          0x62, 0x66, 0xA6, 0xA7, 0x67, 0xA5, 0x65, 0x64, 0xA4, 0x6C, 0xAC, 0xAD, 0x6D, 0xAF, 0x6F,
+ 371          0x6E, 0xAE, 0xAA, 0x6A, 0x6B, 0xAB, 0x69, 0xA9, 0xA8, 0x68, 0x78, 0xB8, 0xB9, 0x79, 0xBB,
+ 372          0x7B, 0x7A, 0xBA, 0xBE, 0x7E, 0x7F, 0xBF, 0x7D, 0xBD, 0xBC, 0x7C, 0xB4, 0x74, 0x75, 0xB5,
+ 373          0x77, 0xB7, 0xB6, 0x76, 0x72, 0xB2, 0xB3, 0x73, 0xB1, 0x71, 0x70, 0xB0, 0x50, 0x90, 0x91,
+ 374          0x51, 0x93, 0x53, 0x52, 0x92, 0x96, 0x56, 0x57, 0x97, 0x55, 0x95, 0x94, 0x54, 0x9C, 0x5C,
+ 375          0x5D, 0x9D, 0x5F, 0x9F, 0x9E, 0x5E, 0x5A, 0x9A, 0x9B, 0x5B, 0x99, 0x59, 0x58, 0x98, 0x88,
+ 376          0x48, 0x49, 0x89, 0x4B, 0x8B, 0x8A, 0x4A, 0x4E, 0x8E, 0x8F, 0x4F, 0x8D, 0x4D, 0x4C, 0x8C,
+ 377          0x44, 0x84, 0x85, 0x45, 0x87, 0x47, 0x46, 0x86, 0x82, 0x42, 0x43, 0x83, 0x41, 0x81, 0x80,
+ 378          0x40 
+ 379          } ; 
+ 380          unsigned int crc16(unsigned char *puchMsg, unsigned int usDataLen) 
+ 381          { 
+ 382   1      unsigned char uchCRCHi = 0xFF ; //* 高CRC字节初始化 
+ 383   1      unsigned char uchCRCLo = 0xFF ; //* 低CRC 字节初始化 
+ 384   1      unsigned long uIndex ; // CRC循环中的索引 
+ 385   1      while (usDataLen--) // 传输消息缓冲区 
+ 386   1      { 
+ 387   2      uIndex = uchCRCHi ^ *(puchMsg++) ; // 计算CRC 
+ 388   2      uchCRCHi = uchCRCLo ^ auchCRCHi[uIndex] ; 
+ 389   2      uchCRCLo = auchCRCLo[uIndex] ; 
+ 390   2      } 
+ 391   1      return (uchCRCHi << 8 | uchCRCLo); 
+ 392   1      } 
+ 393          
+ 394          //该函数对接收缓冲区的MODBUS命令进行CRC验证，如果正确返回1
+ 395          BYTE check_modbus(void) 
+ 396          {
+ 397   1              //RECEVIE[0]为地址，[1]为命令，[2]，[3]为地址
+ 398   1              u8 len;
+ 399   1      //      u16 crc;
+ 400   1              len = 0;
+ 401   1              if(rcv_flag>7)//超过七个才有必要来计算CRC，这里要注意单片机计算能力有限，不知道能不能正常，请孙祥祥测试
+ 402   1              { 
+ 403   2                      if (Receive[1] == 0x03)
+ 404   2                              len = 8;
+ 405   2                      if (Receive[1] == 0x01)
+ 406   2                              len = 8;
+ 407   2                      if (Receive[1] == 0x10)
+ 408   2                              len = Receive[5] + Receive[5] + 9;  //这里应该是触摸屏要发来的字节数-2          
+ 409   2                      //crc=crc16(Receive,len - 2); //这里可以偷懒不做crc校验
+ 410   2                      if (rcv_flag == len )
+ 411   2                      {
+ 412   3                              rcv_flag = 0;
+ 413   3                              memcpy(g_byR1buf,Receive,len);
+ 414   3                              memset(Receive,0,20);
+ 415   3                              snd_flag = 1;
+ 416   3                      }
+ 417   2                      else
+ 418   2                              snd_flag = 0;
+ 419   2              }
+ 420   1              else
+ 421   1                      snd_flag = 0;
+ 422   1              return  snd_flag;
+ 423   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+C51 COMPILER V7.06   UART                                                                  10/12/2011 19:24:59 PAGE 8   
+
+   CODE SIZE        =   1476    ----
+   CONSTANT SIZE    =    512    ----
+   XDATA SIZE       =    178      69
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,19 @@
+Change Component Footprint: Designator=JP5 Old Footprint=HDR1-10 New Footprint=HEAD10B-H - X
+Change Component Footprint: Designator=JP6 Old Footprint=HDR1-10 New Footprint=HEAD10B-H - X
+Added Component: Designator=JP1(P4)
+Added Component: Designator=JP3(P4)
+Added Component: Designator=JP9(P3)
+Added Pin To Net: NetName=AC2 Pin=JP1-1
+Added Pin To Net: NetName=AC2 Pin=JP1-2
+Added Pin To Net: NetName=AC1 Pin=JP1-3
+Added Pin To Net: NetName=AC1 Pin=JP1-4
+Added Pin To Net: NetName=B Pin=JP3-1
+Added Pin To Net: NetName=B Pin=JP3-2
+Added Pin To Net: NetName=A Pin=JP3-3
+Added Pin To Net: NetName=A Pin=JP3-4
+Added Pin To Net: NetName=L1 Pin=JP9-1
+Added Pin To Net: NetName=L1 Pin=JP9-2
+Added Pin To Net: NetName=N Pin=JP9-3
+Added Member To Class: ClassName=Temctrl_CPU Member=Component JP1 H-4
+Added Member To Class: ClassName=Temctrl_CPU Member=Component JP3 H-4
+Added Member To Class: ClassName=Temctrl_O Member=Component JP9 H-3

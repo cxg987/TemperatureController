@@ -1,0 +1,6 @@
+"main.obj",
+"uart.obj",
+"PWM NEW.obj",
+"AD.obj" 
+TO "swj" 
+RAMSIZE(256) 

@@ -1,0 +1,769 @@
+C51 COMPILER V7.06   MAIN                                                                  10/12/2011 19:24:59 PAGE 1   
+
+
+C51 COMPILER V7.06, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE main.c LARGE OPTIMIZE(4,SPEED) BROWSE DEBUG OBJECTEXTEND
+
+stmt level    source
+
+   1          #include <STC_CPU.H>
+   2          #include <INTRINS.H>
+   3          #include <main.h>
+   4          #include <uart.h>
+   5          #include <AD.h>
+   6          #include <String.h>
+   7          #include <PWM_NEW.h>
+   8          #define uchar unsigned char
+   9          #define uint unsigned int
+  10          #define uint32 unsigned long
+  11          
+  12          
+  13          BYTE Lfastcounter,Lslowcounter,Rfastcounter,Rslowcounter;
+  14          bit Lfastflag,Lslowflag,Rfastflag,Rslowflag;
+  15          uint Lslowfq,Lstime,Lfastfq,Lftime;
+  16          uint Rslowfq,Rstime,Rfastfq,Rftime;
+  17          
+  18          void IAP_READ(void);
+  19          void IAP_WRITE(void);
+  20          void IAP_CLEAR(void);
+  21          void Jiaohuan(u16,uint32);
+  22          void  savecombuf(BYTE* buf);
+  23          BYTE i=0;
+  24          BYTE timer1_flag=0;
+  25          BYTE timer2_flag=0;
+  26          BYTE rec_buf[20];
+  27          BYTE Set_cfg[20];
+  28          BYTE rpy_addr[5],snd_addr[5],timer1_counter,timer2_counter,t1_flag,t2_flag;
+  29          BYTE addr,addrlast;
+  30          BYTE timer3_counter,timer4_counter;
+  31          extern BYTE g_byBegT1buf,g_byEndT1buf,g_byBegR1buf,g_byEndR1buf;
+  32          extern BYTE g_byT1buf[T1BUF_MAX_LEN];
+  33          extern BYTE g_byR1buf[R1BUF_MAX_LEN],g_byR2buf[R2BUF_MAX_LEN];
+  34          extern BYTE rcv_flag,snd_flag,rcv_length,rcv_flag2,snd_flag2,rcv_length2;
+  35          BYTE snd_flag3;//´®¿Ú2·¢ËÍ±êÖ¾Î»
+  36          BYTE save_flag;//ÔÚÓĞÏòÃüÁî»º´æĞ´Ö¸ÁîÊ±£¬²»ÔÙĞ´ÁíÒ»¸ö£¬·ÀÖ¹ÖØ¸´µ÷ÓÃ³öÏÖ´íÎó£»
+  37          u16 spd_val;
+  38          extern BYTE Receive[20],Receive2[20];
+  39          extern void rcv_handle(BYTE rcv);
+  40          extern void rcv_handle2(BYTE rcv);
+  41          extern void Pwm_Init(void);
+  42          extern void AD_init();
+  43          void UartACK2(BYTE status);
+  44          void DealReadRegister(uchar addr,uchar len);
+  45          unsigned int crc16(unsigned char *puchMsg, unsigned int usDataLen); 
+  46          extern void Send1(BYTE* buf, BYTE len);
+  47          extern BYTE check_modbus(void);
+  48          extern unsigned int AD_get(BYTE channel);
+  49          extern BYTE t1_rcvtimeout,t2_rcvtimeout;
+  50          
+  51          
+  52          sbit REL = P2^0;
+  53          sbit DEL = P2^1;
+  54          sbit RER = P2^2;
+  55          sbit DER = P2^3;
+C51 COMPILER V7.06   MAIN                                                                  10/12/2011 19:24:59 PAGE 2   
+
+  56          
+  57          uint32 temp_cl1,temp_cl2,temp_clz,cl_j,cl_y,cl_b,cl_d;
+  58          BYTE command[11][6];     //´æ·Å´¥ÃşÆÁ·¢ÏÂÀ´µÄĞèÒªÏòÏÂÎ»»ú·¢µÄÖ¸Áî£¬×îºóÒ»Î»Îª1Ê±·¢Ò»¸ö×Ö½Ú£¬Îª2Ê±·¢Á½¸ö×Ö½
+             -Ú£¬Îª4Ê±·¢4¸ö×Ö½Ú£»                         
+  59          //u16 g_usRegister[32];  //¸Ã±äÁ¿·ÅÖÃ¶ÔÓ¦µÄMODBUSµØÖ·40001-40032
+  60          u16 g_usRegister[66]; 
+  61          //×óÃæ¿ìËÙÆµÂÊ  40001,×óÃæÂıËÙÆµÂÊ      40002,×óÃæ¿ìËÙÊ±¼ä      40003,×óÃæÂıËÙÊ±¼ä      40004
+  62          //×óÃæ³¤¶ÈÉèÖÃ  40005,×óÃæÌ½É´Ñ¡Ôñ      40007
+  63          //ÓÒÃæ¿ìËÙÆµÂÊ  40008,ÓÒÃæÂıËÙÆµÂÊ      40009,ÓÒÃæ¿ìËÙÊ±¼ä      40010,ÓÒÃæÂıËÙÊ±¼ä      40011
+  64          //ÓÒÃæ³¤¶ÈÉèÖÃ  40012,ÓÒÃæÌ½É´Ñ¡Ôñ      40014
+  65          //¼×°à¾íÈÆ²úÁ¿  40015,ÒÒ°à¾íÈÆ²úÁ¿      40017,±û°à¾íÈÆ²úÁ¿      40019,¶¡°à¾íÈÆ²úÁ¿      40021
+  66          //ÀÛ¼Æ×Ü²úÁ¿    40023,¼×ÒÒ±û¶¡Ñ¡Ôñ      40031
+  67          //×ó±ßµ±Ç°¾íÈÆËÙ¶È      40025,ÓÒÃæµ±Ç°¾íÈÆËÙ¶È  40026
+  68          //ÏÂÎ»»úÍ³¼Æ×ÜÊı¸öÊı    40027   
+  69          //ÖÃÁã°´Å¥      40028
+  70          //×óÃæ¹ÊÕÏÖ¸Ê¾  40029,ÓÒÃæ¹ÊÕÏÖ¸Ê¾      40030,ÉèÖÃÏÂÎ»»úµÄ¸öÊı40032
+  71          
+  72          
+  73          /***************ÑÓÊ±×Ó³ÌĞò****************************/
+  74          void delay(char a)//
+  75          {
+  76   1              uchar n;//
+  77   1              uchar b;//
+  78   1              for(b=a;b>0;b--)
+  79   1              {
+  80   2                      n=210;
+  81   2                      while(n!=0) --n;
+  82   2              }
+  83   1      }
+  84          
+  85          BYTE Lfastcounter,      Lslowcounter,Rfastcounter,      Rslowcounter;
+  86          bit Lfastflag,Lslowflag,Rfastflag,Rslowflag;
+  87          uint Lslowfq,Lstime,Lfastfq,Lftime;
+  88          uint Rslowfq,Rstime,Rfastfq,Rftime;
+  89          extern void AD_work( BYTE val,BYTE channel);
+  90          sbit AOUT0 = P1^0;
+  91          sbit AOUT1 = P1^1;
+  92          sbit PWM0 = P1^3;
+  93          sbit PWM1 = P1^4;
+  94          sbit REL0 = P2^4;
+  95          sbit REL1 = P2^5;
+  96          
+  97                                                                                                                  
+  98          
+  99          /************T1ÖĞ¶Ï´¦Àí*****************/
+ 100          void T1_IRQ(void) interrupt 3//10msÖĞ¶Ï
+ 101          {
+ 102   1              TF1=0;
+ 103   1              TH1=0xdc;
+ 104   1              TL1=0x00;
+ 105   1              if(Lfastflag==1)
+ 106   1              {
+ 107   2                      if(Lfastcounter>0)
+ 108   2                              Lfastcounter--;
+ 109   2              }
+ 110   1              if(Lslowflag==1)
+ 111   1              {
+ 112   2                      if(Lslowcounter>0)
+ 113   2                              Lslowcounter--;
+ 114   2              }
+ 115   1              if(Rfastflag==1)
+ 116   1              {
+C51 COMPILER V7.06   MAIN                                                                  10/12/2011 19:24:59 PAGE 3   
+
+ 117   2                      if(Rfastcounter>0)
+ 118   2                              Rfastcounter--;
+ 119   2              }
+ 120   1              if(Rslowflag==1)
+ 121   1              {
+ 122   2                      if(Rslowcounter>0)
+ 123   2                              Rslowcounter--;
+ 124   2              }
+ 125   1              if (t2_rcvtimeout>0) t2_rcvtimeout--;
+ 126   1      }
+ 127                  
+ 128          
+ 129          void T0_IRQ(void)interrupt 1 //¶¨Ê±¼ä¸ô70ms
+ 130          {
+ 131   1              TF0=0;
+ 132   1              TH0=0x04;
+ 133   1              TL0=0x00;
+ 134   1              if(snd_flag3==0)//ÃüÁîÒÑ¾­·¢ËÍÍê
+ 135   1              {
+ 136   2                      if(command[0][0]!=0x00)
+ 137   2                      {
+ 138   3                              Send2(command[0],command[0][4],command[0][5]); //´Ó´®¿Ú2·¢³ö×óÃæ³¤¶È,0±íÊ¾×óÃæ£¬1±íÊ¾ÓÒÃæ
+ 139   3                              snd_flag3=1;
+ 140   3                              timer2_counter=5;//350ms
+ 141   3                              t2_flag=1;      
+ 142   3                      }
+ 143   2              }       
+ 144   1              if(t2_flag==1)
+ 145   1              {
+ 146   2                      if(timer2_counter>0)
+ 147   2                              timer2_counter--;
+ 148   2                      if(timer2_counter==0)
+ 149   2                      { 
+ 150   3                              snd_flag3=0;
+ 151   3                              timer2_flag++;
+ 152   3                      }
+ 153   2              }
+ 154   1              if(timer2_flag>4)//Èç¹û4´ÎºóÈÔÎ´ÊÕµ½Êı¾İ£¬Õâ·ÅÆú¸ÃÖ¸Áî£¬¼ÌĞøÖ´ĞĞÏÂÃæÖ¸Áî¡£
+ 155   1              {
+ 156   2                      memset(command[0],0,6);//´¦ÀíÍê±Ï,Çå³ıÃüÁîĞĞ;
+ 157   2                      for(i=0;i<10;i++)
+ 158   2                      {
+ 159   3                              memcpy(command[i],command[i+1],6);
+ 160   3                      }         
+ 161   2                      snd_flag3=0;
+ 162   2                      timer2_flag=0;
+ 163   2                      t2_flag=0;
+ 164   2              }
+ 165   1              if(timer3_counter>0)
+ 166   1                      timer3_counter--;
+ 167   1              if(timer3_counter==0)//¶ÁµØÖ·Î»Ö¸ÁîÃ¿21Ãë·¢Ò»´ÎÏÈ·¢×óÃæÔÙ·¢ÓÒÃæ
+ 168   1              {
+ 169   2                      snd_addr[0]=0x01;
+ 170   2                      snd_addr[1]=0x00;
+ 171   2                      snd_addr[4]=2;
+ 172   2                      snd_addr[5]=0;
+ 173   2                      if(save_flag==0)
+ 174   2                      {       
+ 175   3                              save_flag=1;
+ 176   3                              savecombuf(snd_addr);
+ 177   3                              save_flag=0;
+ 178   3                      }
+C51 COMPILER V7.06   MAIN                                                                  10/12/2011 19:24:59 PAGE 4   
+
+ 179   2                      //snd_addr[0]=0x01;
+ 180   2                      //snd_addr[1]=0x00;
+ 181   2                      //snd_addr[4]=2;
+ 182   2                      snd_addr[5]=1; //left-right
+ 183   2                      if(save_flag==0)
+ 184   2                      {       
+ 185   3                              save_flag=1;
+ 186   3                              savecombuf(snd_addr);
+ 187   3                              save_flag=0;
+ 188   3                      }
+ 189   2                      timer3_counter=200;     
+ 190   2              } 
+ 191   1              if(timer4_counter>0)
+ 192   1                      timer4_counter--;
+ 193   1      
+ 194   1              if(timer4_counter==0)//¶Á²úÁ¿Ö¸ÁîÃ¿7Ãë·¢Ò»´Î
+ 195   1              {
+ 196   2                      snd_addr[0]=0x04;
+ 197   2                      snd_addr[4]=1;
+ 198   2                      snd_addr[5]=0;
+ 199   2                      if(save_flag==0)
+ 200   2                      {       
+ 201   3                              save_flag=1;
+ 202   3                              savecombuf(snd_addr);
+ 203   3                              save_flag=0;
+ 204   3                      }
+ 205   2                      //snd_addr[0]=0x04;
+ 206   2                      //snd_addr[4]=1;
+ 207   2                      snd_addr[5]=1;
+ 208   2                      if(save_flag==0)
+ 209   2                      {       
+ 210   3                              save_flag=1;
+ 211   3                              savecombuf(snd_addr);
+ 212   3                              save_flag=0;
+ 213   3                      }
+ 214   2                      timer4_counter=100;     
+ 215   2              }               
+ 216   1                
+ 217   1      
+ 218   1      }
+ 219          
+ 220          /*********************************************************************************************************
+             -***********
+ 221          ¸Ãº¯ÊıÖ÷ÒªÊµÏÖ½ÓÊÕµ½µÄMODBUS¶Á±£³Ö¼Ä´æÆ÷Ö¸ÁîµÄ´¦Àí
+ 222          //´¥ÃşÆÁ·¢ËÍµÄÃüÁîÓĞ£º01 03 00 00 00 06 XX XX  ; 01 03 00 06 00 06 XX XX ; 
+ 223          01 03 00 10 00 05 XX XX; 01 03 00 15 00 02 XX XX;  ¶ÁÖ¸Áî
+ 224          µ±´¥ÃşÆÁÓĞĞ´²Ù×÷Ê±£¬·¢ËÍµÄÃüÁî¸ñÊ½Îª£º01 10 00 04 00 01 02 00 05 XX XX £»¹²¼Æ11¸ö×Ö½Ú 
+ 225          ´ËÍâ´¥ÃşÆÁ»¹¿ÉÄÜ·¢ËÍ01 01 00 60 00 10 3D D8ÕâÀà¶ÁÏßÈ¦Ö¸Áî£¬¸ÃÀàÃüÁî¿ÉÒÔ²»Àí¡£
+ 226          g_byR1bufÎª´¦Àí»º³åÇø£¬µ±½ÓÊÕµ½ÍêÕûµÄMODBUSÃüÁîºó£¬½«½ÓÊÕ»º³åÇø¸´ÖÆµ½´¦Àí»º³åÇø
+ 227          ²ÎÊı£ºaddr±£³Ö¼Ä´æÆ÷µÄµØÖ·
+ 228          **********************************************************************************************************
+             -**********/
+ 229          void DealReadRegister(uchar addr,uchar len)
+ 230          {
+ 231   1              
+ 232   1      //      uchar  g_usRegister1[32];          //32µÄÊı×ég_usRegisterÀ´±£´æ²úÁ¿¡¢³¤¶ÈµÈĞÅÏ¢¶ÔÓ¦40001-40032
+ 233   1              uchar data1[80];
+ 234   1              uint crc ;
+ 235   1      
+ 236   1              memset(data1,0,80);
+ 237   1              data1[0] = 0x01; //ÉÏÎ»»ú¶ÔÓ¦µÄMODBUSµØÖ·£¬
+ 238   1              data1[1] = 0x03; //ËµÃ÷µ±Ç°ÊÇ¶Ô¶Á¼Ä´æÆ÷ÃüÁîµÄÏìÓ¦
+C51 COMPILER V7.06   MAIN                                                                  10/12/2011 19:24:59 PAGE 5   
+
+ 239   1              data1[2] = len + len ;
+ 240   1      
+ 241   1              memcpy((char *)(data1+3),(char *)&g_usRegister[addr],data1[2]);  //·µ»ØµÄÊı¾İ³¤¶ÈÎª¼Ä´æÆ÷³¤¶ÈµÄÁ½±¶
+ 242   1      
+ 243   1              //¼ÆËãCRC
+ 244   1              crc = crc16(data1,data1[2] + 3);
+ 245   1              memcpy(data1 + data1[2] + 3,&crc,2);//½«CRCµÄĞ£ÑéÂëÒ²·Åµ½·¢ËÍ»º³åÇø
+ 246   1      
+ 247   1              //ÕâÀï¿ªÊ¼×¼±¸¸ø´¥ÃşÆÁ·¢ËÍÏìÓ¦ÁË¡£
+ 248   1              Send1(data1,data1[2] + 5) ;  
+ 249   1      }
+ 250          
+ 251          /*********************************************************************************************************
+             -***********
+ 252          ¸Ãº¯ÊıÖ÷ÒªÊµÏÖ½ÓÊÕµ½µÄMODBUS¶Á±£³Ö¼Ä´æÆ÷Ö¸ÁîµÄ´¦Àí
+ 253          //´¥ÃşÆÁ·¢ËÍµÄÃüÁîÓĞ£º01 03 00 00 00 06 XX XX  ; 01 03 00 06 00 06 XX XX ; 
+ 254          01 03 00 10 00 05 XX XX; 01 03 00 15 00 02 XX XX;  ¶ÁÖ¸Áî
+ 255          µ±´¥ÃşÆÁÓĞĞ´²Ù×÷Ê±£¬·¢ËÍµÄÃüÁî¸ñÊ½Îª£º01 10 00 04 00 01 02 00 05 XX XX £»¹²¼Æ11¸ö×Ö½Ú 
+ 256          ´ËÍâ´¥ÃşÆÁ»¹¿ÉÄÜ·¢ËÍ01 01 00 60 00 10 3D D8ÕâÀà¶ÁÏßÈ¦Ö¸Áî£¬¸ÃÀàÃüÁî¿ÉÒÔ²»Àí¡£
+ 257          g_byR1bufÎª´¦Àí»º³åÇø£¬µ±½ÓÊÕµ½ÍêÕûµÄMODBUSÃüÁîºó£¬½«½ÓÊÕ»º³åÇø¸´ÖÆµ½´¦Àí»º³åÇø
+ 258          ²ÎÊı£ºaddr±£³Ö¼Ä´æÆ÷µÄµØÖ·
+ 259          **********************************************************************************************************
+             -**********/
+ 260          void DealWriteRegister(uchar addr,uchar val[4],uchar len)
+ 261          {
+ 262   1              uchar data1[34];  //
+ 263   1              uint crc ;
+ 264   1      
+ 265   1              memset(data1,0,34);
+ 266   1              data1[0] = 0x01; //ÉÏÎ»»ú¶ÔÓ¦µÄMODBUSµØÖ·£¬
+ 267   1              data1[1] = 0x10; //ËµÃ÷µ±Ç°ÊÇ¶Ô¶Á¼Ä´æÆ÷ÃüÁîµÄÏìÓ¦
+ 268   1              data1[2] = 0x00 ;
+ 269   1              data1[3] = addr;
+ 270   1              data1[4] = 0x00;
+ 271   1              data1[5] = 0x00;
+ 272   1              //¼ÆËãCRC
+ 273   1              crc = crc16(data1,6);
+ 274   1              memcpy(data1 + 6,&crc,2);//½«CRCµÄĞ£ÑéÂëÒ²·Åµ½·¢ËÍ»º³åÇø
+ 275   1      
+ 276   1              //ÕâÀï¿ªÊ¼×¼±¸¸ø´¥ÃşÆÁ·¢ËÍÏìÓ¦ÁË¡£
+ 277   1              Send1(data1,8) ; 
+ 278   1               
+ 279   1      
+ 280   1              //¶ÔĞ´ÃüÁî¶øÑÔ£¬»¹ĞèÒª¸øÏÂÎ»»ú·¢ËÍĞ´ÃüÁî¡£
+ 281   1                      //×óÃæ¿ìËÙÆµÂÊ  40001,×óÃæÂıËÙÆµÂÊ      40002,×óÃæ¿ìËÙÊ±¼ä      40003,×óÃæÂıËÙÊ±¼ä      40004
+ 282   1                      //×óÃæ³¤¶ÈÉèÖÃ  40005,×óÃæÌ½É´Ñ¡Ôñ      40007
+ 283   1                      //ÓÒÃæ¿ìËÙÆµÂÊ  40008,ÓÒÃæÂıËÙÆµÂÊ      40009,ÓÒÃæ¿ìËÙÊ±¼ä      40010,ÓÒÃæÂıËÙÊ±¼ä      40011
+ 284   1                      //ÓÒÃæ³¤¶ÈÉèÖÃ  40012,ÓÒÃæÌ½É´Ñ¡Ôñ      40014
+ 285   1                      //¼×°à¾íÈÆ²úÁ¿  40015,ÒÒ°à¾íÈÆ²úÁ¿      40017,±û°à¾íÈÆ²úÁ¿      40019,¶¡°à¾íÈÆ²úÁ¿      40021
+ 286   1                      //ÀÛ¼Æ×Ü²úÁ¿    40023,¼×ÒÒ±û¶¡Ñ¡Ôñ      40031
+ 287   1                      //×ó±ßµ±Ç°¾íÈÆËÙ¶È      40025,ÓÒÃæµ±Ç°¾íÈÆËÙ¶È  40026
+ 288   1                      //×óÃæÏÂÎ»»úÍ³¼Æ¸öÊı    40027     ÓÒÃæÏÂÎ»»úÍ³¼Æ¸öÊı 40034
+ 289   1                      //ÖÃÁã°´Å¥      40028
+ 290   1                      //×óÃæ¹ÊÕÏÖ¸Ê¾  40029,ÓÒÃæ¹ÊÕÏÖ¸Ê¾      40030,
+ 291   1                      //×óÃæÉèÖÃÏÂÎ»»úµÄ¸öÊı40032      ÓÒÃæÉèÖÃÏÂÎ»»úµÄ¸öÊı  40033
+ 292   1              if(addr == 0 )//ÊÕµ½×óÃæ¿ìËÙÆµÂÊ
+ 293   1              {
+ 294   2                      memcpy(g_usRegister+addr,val,2);
+ 295   2                      Lfastfq=(uint)val[1];
+ 296   2              }
+ 297   1              else if(addr == 1 )//ÊÕµ½×óÃæÂıËÙÆµÂÊ
+ 298   1              {
+C51 COMPILER V7.06   MAIN                                                                  10/12/2011 19:24:59 PAGE 6   
+
+ 299   2                      memcpy(g_usRegister+addr,val,2);
+ 300   2                      Lslowfq=(uint)val[1];
+ 301   2              }
+ 302   1              else if(addr == 2 )//ÊÕµ½×óÃæ¿ìËÙÊ±¼ä
+ 303   1              {
+ 304   2                      memcpy(g_usRegister+addr,val,2);
+ 305   2                       Lftime=((uint)val[0]<<8)|((uint)val[1]);
+ 306   2              }
+ 307   1              else if(addr == 3 )//ÊÕµ½×óÃæÂıËÙÊ±¼ä
+ 308   1              {
+ 309   2                      memcpy(g_usRegister+addr,val,2);
+ 310   2                      Lstime=((uint)val[0]<<8)|((uint)val[1]);
+ 311   2              }               
+ 312   1              else if (addr == 4 )//×óÃæ³¤¶ÈÉèÖÃ
+ 313   1              {
+ 314   2              //      memcpy(g_usRegister+addr,val,4); 
+ 315   2                      snd_addr[0]=0x02;
+ 316   2                      snd_addr[1]=val[3];//
+ 317   2                      snd_addr[2]=val[0];//
+ 318   2                      snd_addr[3]=val[1];//
+ 319   2                      snd_addr[4]=4;//·¢ËÍÊı¾İ³¤¶È
+ 320   2                      snd_addr[5]=0;//0±íÊ¾×óÃæ£¬1±íÊ¾ÓÒÃæ
+ 321   2                      if(save_flag==0)
+ 322   2                      {       
+ 323   3                              save_flag=1;
+ 324   3                              savecombuf(snd_addr);
+ 325   3                              memcpy(g_usRegister+addr,val,4); 
+ 326   3                              save_flag=0;
+ 327   3                      } 
+ 328   2              }
+ 329   1              else if(addr == 7 )     //ÊÕµ½ÓÒÃæ¿ìËÙÆµÂÊ
+ 330   1              {
+ 331   2                      memcpy(g_usRegister+addr,val,2);
+ 332   2                      Rfastfq=(uint)val[1];
+ 333   2              }
+ 334   1              else if(addr == 8 )//ÊÕµ½ÓÒÃæÂıËÙÆµÂÊ
+ 335   1              {
+ 336   2                      memcpy(g_usRegister+addr,val,2);
+ 337   2                      Rslowfq=(uint)val[1];
+ 338   2              }
+ 339   1              else if(addr == 9 )     //ÊÕµ½ÓÒÃæ¿ìËÙÊ±¼ä
+ 340   1              {
+ 341   2                      memcpy(g_usRegister+addr,val,2);
+ 342   2                       Rftime=((uint)val[0]<<8)|((uint)val[1]);
+ 343   2              }
+ 344   1              else if(addr == 10 )//ÊÕµ½ÓÒÃæÂıËÙÊ±¼ä
+ 345   1              {
+ 346   2                      memcpy(g_usRegister+addr,val,2);
+ 347   2                      Rstime=((uint)val[0]<<8)|((uint)val[1]);
+ 348   2              }
+ 349   1              else if (addr == 11 )//ÓÒÃæ³¤¶ÈÉèÖÃ
+ 350   1              {
+ 351   2                      memcpy(g_usRegister+addr,val,4); 
+ 352   2                      snd_addr[0]=0x02;
+ 353   2                      snd_addr[1]=val[3];//
+ 354   2                      snd_addr[2]=val[0];//
+ 355   2                      snd_addr[3]=val[1];//
+ 356   2                      snd_addr[4]=4;
+ 357   2                      snd_addr[5]=1;//0±íÊ¾×óÃæ£¬1±íÊ¾ÓÒÃæ    
+ 358   2                      if(save_flag==0)
+ 359   2                      {       
+ 360   3                              save_flag=1;
+C51 COMPILER V7.06   MAIN                                                                  10/12/2011 19:24:59 PAGE 7   
+
+ 361   3                              savecombuf(snd_addr);
+ 362   3                              save_flag=0;
+ 363   3                      }       
+ 364   2              }
+ 365   1       
+ 366   1              else if(addr == 6 )//ÊÕµ½×óÃæÉè¶¨Ì½Ë¿Æ÷
+ 367   1              {
+ 368   2              //      memcpy(g_usRegister+addr,val,2);
+ 369   2                      snd_addr[0]=0X03;
+ 370   2                      snd_addr[1]=val[1];
+ 371   2                      snd_addr[4]=2;
+ 372   2                      snd_addr[5]=0;
+ 373   2                      if(save_flag==0)
+ 374   2                      {       
+ 375   3                              save_flag=1;
+ 376   3                              savecombuf(snd_addr);
+ 377   3                              memcpy(g_usRegister+addr,val,2);
+ 378   3                              save_flag=0;
+ 379   3                      }
+ 380   2              }
+ 381   1              else if(addr == 13)//ÊÕµ½ÓÒÃæÉè¶¨Ì½Ë¿Æ÷
+ 382   1              {
+ 383   2              //      memcpy(g_usRegister+addr,val,2);                 
+ 384   2                      snd_addr[0]=0X03;
+ 385   2                      snd_addr[1]=val[1];
+ 386   2                      snd_addr[4]=2;
+ 387   2                      snd_addr[5]=1;
+ 388   2                      if(save_flag==0)
+ 389   2                      {       
+ 390   3                              save_flag=1;
+ 391   3                              savecombuf(snd_addr);
+ 392   3                              memcpy(g_usRegister+addr,val,2);
+ 393   3                              save_flag=0;
+ 394   3                      }
+ 395   2              }
+ 396   1                               
+ 397   1              else if(addr == 31)
+ 398   1              {
+ 399   2                      memcpy(g_usRegister+addr,val,2);
+ 400   2              }
+ 401   1              else if (addr == 32)
+ 402   1              {
+ 403   2                      memcpy(g_usRegister+addr,val,2); 
+ 404   2              }  
+ 405   1      }
+*** WARNING C280 IN LINE 260 OF MAIN.C: 'len': unreferenced local variable
+ 406          
+ 407          
+ 408          
+ 409          
+ 410          /*********************************************************************************************************
+             -************
+ 411          ¿×ÑÇ¹ã£ºÒÔÉÏ²¿·ÖÇëÖÜÉÙ²¨¿´¿´ÄÄĞ©ÊÇÔÚÉÏÎ»»úÃ»ÓÃµÄ¡£
+ 412          **********************************************************************************************************
+             -************/
+ 413          
+ 414          //      PWM_clock(2);      // PCA/PWMÊ±ÖÓÔ´Îª¶¨Ê±Æ÷0µÄÒç³ö
+ 415          //      PWM_start(2,0); // Ä£¿é0,ÉèÖÃÎªPWMÊä³ö,ÎŞÖĞ¶Ï,³õÊ¼Õ¼¿ÕÒòËØÎª25%
+ 416          /*********************************************************************************************************
+             -************
+ 417          ¿×ÑÇ¹ã£ºÕâÒ»²¿·Ö¿´¿´PWMµÄÊä³ö»¹ÒªÇóÓĞÄÄĞ©²ÎÊıÉèÖÃ¡£
+ 418          **********************************************************************************************************
+C51 COMPILER V7.06   MAIN                                                                  10/12/2011 19:24:59 PAGE 8   
+
+             -************/
+ 419             /************T0ÖĞ¶Ï´¦Àí*****************/
+ 420          
+ 421          
+ 422          void main(void) 
+ 423          { 
+ 424   1              uchar buf[4];
+ 425   1              REL=0; 
+ 426   1              DEL=0;
+ 427   1              RER=0;
+ 428   1              DER=0; 
+ 429   1              InitUart();
+ 430   1              InitUart2();
+ 431   1              Pwm_Init();
+ 432   1              AD_init();        //A/D×ª»»³õÊ¼»¯
+ 433   1              delay(100);
+ 434   1              TMOD =0x11; /* timer 0 mode 1: 8-Bit reload */ 
+ 435   1      //      TH0=0x00;
+ 436   1      //      TL0=0x3f;
+ 437   1              TH0=0x04;
+ 438   1              TL0=0x00;
+ 439   1              ET0=1;
+ 440   1              IT0=1;
+ 441   1              TF0=0;
+ 442   1              TR0=1;
+ 443   1      //      TH1=0x0d;
+ 444   1      //      TL1=0xbf;
+ 445   1              TH1=0xdc;
+ 446   1              TL1=0x00;
+ 447   1              ET1=1;
+ 448   1              IT1=1;
+ 449   1              TF1=0;
+ 450   1              TR1=1;  
+ 451   1              EA=1;    
+ 452   1              Lfastflag=1;
+ 453   1              Lslowflag=0; 
+ 454   1              Lfastfq=0;
+ 455   1              Lslowfq=0;
+ 456   1              Lftime=0;
+ 457   1              Lstime=0;
+ 458   1              Rfastflag=1;
+ 459   1              Rslowflag=0;              
+ 460   1              Rfastfq=0;
+ 461   1              Rslowfq=0;
+ 462   1              Rftime=0;
+ 463   1              Rstime=0;
+ 464   1              REL0=0;
+ 465   1              REL1=0;
+ 466   1              temp_cl1=0;
+ 467   1              temp_cl2=0;
+ 468   1              temp_clz=0;
+ 469   1              cl_j=cl_y=cl_b=cl_d=0;
+ 470   1              rcv_flag=rcv_flag2=0;
+ 471   1              snd_flag=snd_flag2=0;
+ 472   1              snd_flag3=0;/////////////////////////////////////////////////////////////////////////
+ 473   1              save_flag=0;
+ 474   1              spd_val=0;
+ 475   1              timer3_counter=timer4_counter=0;
+ 476   1              memset(g_usRegister,0,132);
+ 477   1      //      for(i=0;i<11;i++)
+ 478   1              {
+ 479   2                       memset(&command[0][0],0,66); 
+C51 COMPILER V7.06   MAIN                                                                  10/12/2011 19:24:59 PAGE 9   
+
+ 480   2              }
+ 481   1               
+ 482   1              while(1) 
+ 483   1              {  
+ 484   2                      if(Lfastflag==1)
+ 485   2                      {
+ 486   3                              if(Lfastcounter==0)     //×ó±ß¿ìËÙÆµÂÊÔËĞĞÊ±¼äµ½
+ 487   3                              {
+ 488   4                                      CCAP0H =0xFF*(Lslowfq/10);         //Õ¼¿Õ±ÈÉèÖÃ
+ 489   4                                      Lslowflag=1;
+ 490   4                                      Lfastflag=0;
+ 491   4                                      Lslowcounter=Lstime;
+ 492   4                                      AD_work( CCAP0H,0);
+ 493   4                              }                                       
+ 494   3                      }
+ 495   2                      if(Lslowflag==1)
+ 496   2                      {
+ 497   3                              if(Lslowcounter==0)//×ó±ßÂıËÙÆµÂÊÔËĞĞÊ±¼äµ½
+ 498   3                              {
+ 499   4                                      CCAP0H =0xFF*(Lfastfq/10);
+ 500   4                                      Lfastflag=1;
+ 501   4                                      Lslowflag=0;
+ 502   4                                      Lfastcounter=Lftime;
+ 503   4                                      AD_work( CCAP0H,0);
+ 504   4                              }
+ 505   3                                              
+ 506   3                      }
+ 507   2                      if(Rfastflag==1)
+ 508   2                      {
+ 509   3                              if(Rfastcounter==0)//ÓÒ±ß¿ìËÙÆµÂÊÔËĞĞÊ±¼äµ½
+ 510   3                              {
+ 511   4                                      CCAP1H = 0xFF*(Rslowfq/10);
+ 512   4                                      Rslowflag=1;
+ 513   4                                      Rfastflag=0;
+ 514   4                                      Rslowcounter=Rstime;
+ 515   4                                      AD_work( CCAP1H,1);
+ 516   4                              }
+ 517   3                                              
+ 518   3                      }
+ 519   2                      if(Rslowflag==1)
+ 520   2                      {
+ 521   3                              if(Rslowcounter==0)//ÓÒ±ßÂıËÙÆµÂÊÔËĞĞÊ±¼äµ½
+ 522   3                              {
+ 523   4                                      CCAP1H =0xFF*(Rfastfq/10);
+ 524   4                                      Rfastflag=1;
+ 525   4                                      Rslowflag=0;
+ 526   4                                      Rfastcounter=Rftime;
+ 527   4                                      AD_work( CCAP1H,1);
+ 528   4                              }
+ 529   3                                      
+ 530   3                      }
+ 531   2      /*********************************************************
+ 532   2      ÕâÒ»µãÊÇĞ´¾íÈÆËÙ¶È
+ 533   2      *******************************************************/                                 
+ 534   2                 //spd_val=AD_get(0);
+ 535   2                 //memcpy(&g_usRegister[24],&spd_val,2);
+ 536   2                 //spd_val=AD_get(1);
+ 537   2                 //memcpy(&g_usRegister[25],&spd_val,2);
+ 538   2      
+ 539   2      /*********************************************************************************************************
+             -***********
+ 540   2              //´®¿Ú1Óë´¥ÃşÆÁÁ¬½Ó¡£
+C51 COMPILER V7.06   MAIN                                                                  10/12/2011 19:24:59 PAGE 10  
+
+ 541   2              //´¥ÃşÆÁ·¢ËÍµÄÃüÁîÓĞ£º01 03 00 00 00 06 XX XX  ; 01 03 00 06 00 06 XX XX ; 
+ 542   2                                    01 03 00 10 00 05 XX XX; 01 03 00 15 00 02 XX XX;  ¶ÁÖ¸Áî
+ 543   2              µ±´¥ÃşÆÁÓĞĞ´²Ù×÷Ê±£¬·¢ËÍµÄÃüÁî¸ñÊ½Îª£º01 10 00 04 00 01 02 00 05 XX XX £»¹²¼Æ11¸ö×Ö½Ú 
+ 544   2                                                    01 10 00 04 00 02 04 00 00 00 00 XX XX                                                                    
+ 545   2              ´ËÍâ´¥ÃşÆÁ»¹¿ÉÄÜ·¢ËÍ01 01 00 60 00 10 3D D8ÕâÀà¶ÁÏßÈ¦Ö¸Áî£¬¸ÃÀàÃüÁî¿ÉÒÔ²»Àí¡£
+ 546   2      **********************************************************************************************************
+             -***********/
+ 547   2                      if (rcv_flag > 0)
+ 548   2                      {
+ 549   3                              //´®¿Ú1ÊÕµ½µÄ´¥ÃşÆÁ·¢¹ıÀ´µÄÊı¾İ
+ 550   3                              //ÅĞ¶ÏÊÇ·ñÎªÒ»¸öÍêÕûµÄMODBUSÃüÁî¡£Èç¹ûÊÇÍêÕûµÄMODBUSÃüÁî£¬Ôò½«Êı¾İ´Ó½ÓÊÕ»º³åÇø·Åµ½´¦Àí»º³åÇø½øĞĞ´¦Àí£¬Í
+             -¬Ê±Rcv_flagÖÃ0£¬½ÓÊÕ»º³åÇø¸´Î»¡£
+ 551   3                              snd_flag = check_modbus(); 
+ 552   3                      }
+ 553   2      
+ 554   2                      if(snd_flag == 1)        //g_byR1bufÎª´¦Àí»º³åÇø£¬µ±½ÓÊÕµ½ÍêÕûµÄMODBUSÃüÁîºó£¬½«½ÓÊÕ»º³åÇø¸´ÖÆµ½´¦Àí»º³åÇø
+ 555   2                      {
+ 556   3                              //Èç¹û´¥ÃşÆÁ·¢À´µÄÊÇ¶ÁÃüÁî£¬Ôò´Ó´®¿Ú1½«µ±Ç°µÄ¼Ä´æÆ÷Öµ·¢ËÍµ½´¥ÃşÆÁ
+ 557   3                              switch (g_byR1buf[1])  //
+ 558   3                              {
+ 559   4                              case 0x03:  //¶Á±£³Ö¼Ä´æÆ÷ÃüÁî£¬Èç²úÁ¿¡¢³¤¶È¡¢ÏÂÎ»»ú¸öÊıµÈĞÅÏ¢
+ 560   4                                      //ÕâÀïÒª×ö´¦Àí          
+ 561   4                                      DealReadRegister(g_byR1buf[3],g_byR1buf[5]);   //Òª¶ÁµÄ±£³Ö¼Ä´æÆ÷µÄµØÖ·
+ 562   4                                      break;
+ 563   4                              case 0x01:  //¶ÁÏßÈ¦
+ 564   4                                      //¸ÃÃüÁîÓ¦¸Ã¿ÉÒÔ²»×ö´¦Àí
+ 565   4                                      break; 
+ 566   4                          case 0x10:  //Ğ´¼Ä´æÆ÷£¬µ±ÎªĞ´ÃüÁîÊ±£¬Ò»·½ÃæÒª´ÓUART1¸ø´¥ÃşÆÁÏìÓ¦£¬ÁíÒ»·½Òª´Ó´®¿Ú2¸øÏÂÎ»»ú½«µ±Ç°µÄ¼Ä
+             -´æÆ÷¸üĞÂ
+ 567   4                                      //ÕâÀïÒªÇø·ÖÒªĞ´µÄÊÇÁ½×Ö½Ú£¨ÆµÂÊ£©»¹ÊÇËÄ×Ö½Ú£¨³¤¶È£©
+ 568   4                                      if (g_byR1buf[5] == 0x01)
+ 569   4                                      {
+ 570   5                                              buf[0] = g_byR1buf[7];
+ 571   5                                              buf[1] = g_byR1buf[8];
+ 572   5                                              buf[2] = 0x00;
+ 573   5                                              buf[3] = 0x00;
+ 574   5                                              DealWriteRegister(g_byR1buf[3],buf,1);  //ÕâÀï¿Ï¶¨ÊÇĞ´Ò»¸ö¼Ä´æÆ÷£¬ÎÒÃÇ¾Í¼òµ¥´¦Àí°É¡£
+ 575   5                                      }
+ 576   4                                      if (g_byR1buf[5] == 0x02)
+ 577   4                                      {
+ 578   5                                              buf[0] = g_byR1buf[7];
+ 579   5                                              buf[1] = g_byR1buf[8];
+ 580   5                                              buf[2] = g_byR1buf[9];
+ 581   5                                              buf[3] = g_byR1buf[10];
+ 582   5                                              DealWriteRegister(g_byR1buf[3],buf,2);  //ÕâÀï¿Ï¶¨ÊÇĞ´Ò»¸ö¼Ä´æÆ÷£¬ÎÒÃÇ¾Í¼òµ¥´¦Àí°É¡£
+ 583   5                                      }
+ 584   4                                      break; 
+ 585   4                              default:        //ÆäÓàÃüÁî£¬ÎÒÃÇ¾Í²»×ö´¦ÀíÁË£¬´¥ÃşÆÁÓ¦¸Ã²»»á·¢¡£
+ 586   4                                      break; 
+ 587   4                              }
+ 588   3                              snd_flag = 0;  //ÉÏ´ÎÃüÁîÒÑ¾­´¦ÀíºÃÁË¡£
+ 589   3                      }
+ 590   2      
+ 591   2                      if(rcv_flag2 > 0)  //Èç¹ûÊÕµ½
+ 592   2                      {
+ 593   3                              if (Receive2[rcv_flag2-1] == 0xfe)
+ 594   3                                      rcv_handle2(Receive2[0]);
+ 595   3                              if (t2_rcvtimeout == 0)
+ 596   3                              {
+ 597   4                                      memset(Receive2,0,20);
+ 598   4                                      rcv_flag2 = 0;
+ 599   4                              }
+C51 COMPILER V7.06   MAIN                                                                  10/12/2011 19:24:59 PAGE 11  
+
+ 600   3                       }
+ 601   2                      
+ 602   2                      if(snd_flag2 == 1)         //ÊÕµ½ÏÂÎ»»úµÄ½â°ü´¦ÀíÍê      ´æ·ÅÔÚg_byR2buf
+ 603   2                      {
+ 604   3                              if(g_byR2buf[0]!=0x09)
+ 605   3                              {
+ 606   4                                      if (g_byR2buf[0] != 0x00)
+ 607   4                                              UartACK2(g_byR2buf[0]);//ÏÈ»Ø¸´ACK,ÔÙ´¦ÀíÊı¾İ;
+ 608   4                                      t2_flag=0;
+ 609   4                                      if(g_byR2buf[0]==0x08)//·µ»Ø·¢ËÍ²úÁ¿
+ 610   4                                      {
+ 611   5                                              if(command[0][5]==0)
+ 612   5                                                      temp_cl1=((uint32)g_byR2buf[1]<<24)|((uint32)g_byR2buf[2]<<16)|((uint32)g_byR2buf[3]<<8)|(uint32)g_b
+             -yR2buf[4];
+ 613   5                                              else
+ 614   5                                                 temp_cl2=((uint32)g_byR2buf[1]<<24)|((uint32)g_byR2buf[2]<<16)|((uint32)g_byR2buf[3]<<8)|(uint3
+             -2)g_byR2buf[4];
+ 615   5                                              if (g_usRegister[30] == 0x01) //¼×°à
+ 616   5                                              {
+ 617   6                                                      cl_j = temp_cl1 + temp_cl2; //ÀÛ¼Æ²úÁ¿
+ 618   6                                                      Jiaohuan(14,cl_j);
+ 619   6                                              }
+ 620   5                                              else if (g_usRegister[30] == 0x02)//ÒÒ°à
+ 621   5                                              {
+ 622   6                                                      cl_y = temp_cl1 + temp_cl2; //ÀÛ¼Æ²úÁ¿
+ 623   6                                                      Jiaohuan(16,cl_j);
+ 624   6                                              }
+ 625   5                                              else if (g_usRegister[30] == 0x03)
+ 626   5                                              {
+ 627   6                                                      cl_b = temp_cl1 + temp_cl2; //ÀÛ¼Æ²úÁ¿
+ 628   6                                                      Jiaohuan(18,cl_j);
+ 629   6                                              }
+ 630   5                                              else if (g_usRegister[30] == 0x04)
+ 631   5                                              {
+ 632   6                                                      cl_d = temp_cl1 + temp_cl2; //ÀÛ¼Æ²úÁ¿
+ 633   6                                                      Jiaohuan(20,cl_j);
+ 634   6                                              }       
+ 635   5                                                      temp_clz = cl_j+cl_y+cl_b+cl_d;
+ 636   5                                                      Jiaohuan(22,cl_j);
+ 637   5                                                      //temp_cl1 = 0;
+ 638   5                                              //      temp_cl2 = 0;
+ 639   5                                              }
+ 640   4                                              if(g_byR2buf[0]==0x05)   //·µ»ØµØÖ·Éè¶¨
+ 641   4                                              {
+ 642   5                                                      if(command[0][5]==0)
+ 643   5                                                      {
+ 644   6                                                              g_usRegister[26] = g_byR2buf[1];
+ 645   6                                                              if(g_usRegister[26]!=g_usRegister[31])
+ 646   6                                                              g_usRegister[28]=0x0001;
+ 647   6                                                              else 
+ 648   6                                                              g_usRegister[28]=0x0000;
+ 649   6                                                      }
+ 650   5                                                      else
+ 651   5                                                      {
+ 652   6                                                              g_usRegister[33] = g_byR2buf[1];
+ 653   6                                                              if(g_usRegister[33]!=g_usRegister[32])
+ 654   6                                                              g_usRegister[29]=0x0001;
+ 655   6                                                              else 
+ 656   6                                                              g_usRegister[29]=0x0000;
+ 657   6                                                      }
+ 658   5                                              }
+ 659   4                                              memset(command[0],0,6);//´¦ÀíÍê±Ï,Çå³ıÃüÁîĞĞ;
+C51 COMPILER V7.06   MAIN                                                                  10/12/2011 19:24:59 PAGE 12  
+
+ 660   4                                                      for(i=0;i<10;i++)
+ 661   4                                                      {
+ 662   5                                                              memcpy(command[i],command[i+1],6);
+ 663   5                                                      }
+ 664   4                                                      snd_flag3=0;
+ 665   4                                              
+ 666   4                                      }       
+ 667   3                                      if(g_byR2buf[0]==0x09)//ÊÕµ½ACK
+ 668   3                                      {
+ 669   4                                              //if(g_byR2buf[1]==command[0][0]) //////////////////////////////////////////////////////////
+ 670   4                                              t2_flag=0;      
+ 671   4                                              memset(g_byR2buf,0,30);                 
+ 672   4                                      }
+ 673   3                              snd_flag2=0;
+ 674   3                              }        
+ 675   2              }
+ 676   1      }
+ 677          void UartACK2(BYTE status)
+ 678          {
+ 679   1              BYTE ack[2];
+ 680   1              ack[0]=0x09;
+ 681   1              ack[1]=status;
+ 682   1          Send2(ack,2,command[0][5]);
+ 683   1      }
+ 684          void Jiaohuan(u16 addr,uint32 in)
+ 685          {
+ 686   1              u16 in1=0,in2=0;
+ 687   1              in2=(u16)(in&0x0000ffff);
+ 688   1              in1=(u16)in>>16;
+ 689   1              in=(uint32)((((uint32)in2)<<16)+in1);
+ 690   1              memcpy((char*)(&g_usRegister[addr]),(char*)&in,4);
+ 691   1      }
+ 692          void  savecombuf(BYTE* buf)
+ 693          {
+ 694   1              BYTE i=0, j=0;
+ 695   1              for(i=0;i<10;i++)
+ 696   1              {
+ 697   2              
+ 698   2                      if((command[i][0]==0x00)||((buf[0]==command[i][0])&&(buf[5]==command[i][5]))) //Èç¹ûÇ°ÃæÒÑ¾­ÓĞ¸ÃÖ¸Áî£¬Ôò
+             -¸²¸Ç£¬Ã»ÓĞµÄ»°·Å×îºó
+ 699   2                      {       
+ 700   3                              for(j=0;j<6;j++)
+ 701   3                              {
+ 702   4                                      command[i][j]=buf[j];   
+ 703   4                              }
+ 704   3                        break;
+ 705   3                      }
+ 706   2              }
+ 707   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   4066    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    311     142
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      4    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

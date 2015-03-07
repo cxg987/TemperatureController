@@ -1,0 +1,19 @@
+Removed Pin From Net: NetName=VCC Pin=R12-1
+Removed Pin From Net: NetName=A Pin=R13-1
+Removed Pin From Net: NetName=B Pin=R14-1
+Removed Pin From Net: NetName=GND Pin=R15-2
+Removed Member From Class: ClassName=Temctrl_CPU Member=R12
+Removed Member From Class: ClassName=Temctrl_CPU Member=R12
+Removed Member From Class: ClassName=Temctrl_CPU Member=R12
+Removed Member From Class: ClassName=Temctrl_CPU Member=R15
+Removed Member From Class: ClassName=Temctrl_CPU Member=R15
+Removed Member From Class: ClassName=Temctrl_CPU Member=R15
+Change Component Comment : Designator=R14 Old Comment=470 New Comment=62
+Change Component Comment : Designator=R13 Old Comment=470 New Comment=62
+Added Pin To Net: NetName=A Pin=R13-2
+Added Pin To Net: NetName=B Pin=R14-2
+Added Pin To Net: NetName=A Pin=U5-6
+Added Pin To Net: NetName=B Pin=U5-7
+Added Pin To Net: NetName=NetR13_1 Pin=R13-1
+Added Pin To Net: NetName=NetR13_1 Pin=R14-1
+Added Net: Name=NetR13_1

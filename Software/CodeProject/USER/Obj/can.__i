@@ -1,0 +1,1 @@
+-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\ST\STM32F10x" -o ".\Obj\can.o" --omf_browse ".\Obj\can.crf" --depend ".\Obj\can.d" "..\HARDWARE\CAN.c"

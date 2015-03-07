@@ -1,0 +1,308 @@
+#include "usart.h"
+
+extern u16 Temp[16];		 //外部变量声明
+extern u16 TEMP_MIN;
+extern u16 TEMP_MAX;
+
+u8 recvcount=0;
+u8 sendcount=0;
+ 
+u8 RX_BUF[9];			//接收数组
+u8 TX_BUF[30]; 			//发送数组
+u16 comptemp;			//全局补偿温度值
+u16 EachSegComp[16];	//各节补偿温度值
+
+//u8 recvcmd = 0;			    //接收状态标志变量，各位标志的状态如上定义
+/*******************************************************************
+* 串口1 调试函数
+* 包括串口初始化函数，和中断函数
+* 支持适应不同频率下的串口波特率设置，增加了串口接收命令功能
+********************************************************************/
+void Usart1_Init(u32 pclk2, u32 bound)
+{												   
+	float temp;
+	u16 mantissa;
+	u16 fraction;
+	temp = (float)(pclk2*1000000)/(bound*16);  //temp=USARTDIV,  Tx / Rx 波特率 ＝ fCK / (16* USARTDIV)
+ 	mantissa = temp;                      //得到整数部分
+	fraction = (temp-mantissa)*16;		  //得到小数部分
+	mantissa <<= 4;
+	mantissa += fraction;
+
+	RCC->APB2ENR |= 1<<3; 				  //使能PORTB口,
+	RCC->APB2ENR |= 1<<14;                //USART1时钟
+	RCC->APB2ENR |= 1<<0;				  //AFIO时钟使能
+
+	GPIOB->CRL &=0x000FFFFF;
+	GPIOB->CRL |=0x4B100000;             //PB5(485_ctr),PB6(Tx1),PB7(RX1)状态设置
+	GPIOB->BRR |= GPIO_Pin_5;			 //set 485_ctr for RX
+	AFIO->MAPR |= 0x00000004;			 //USART1 remap
+
+
+	RCC->APB2RSTR |= 1<<14;	    		  //复位USART1
+	RCC->APB2RSTR &= ~(1<<14);			  //停止复位
+
+	USART1->BRR = mantissa;				  //设置波特率
+	USART1->CR1 |= (1<<12 | 2<<9 );       //1位停止位，校验使能，偶校验，9个数据位（8+1校验位）
+	USART1->CR1 |= (1<<13 | 3<<2 );		  //USART,TE,RE使能,8位数据
+
+
+    USART1->SR  &= ~(1<<5);				 //清标志位RXNE
+//  USART1->CR1 |= 1<<8;				 //PE奇偶校验中断使能
+	USART1->CR1 |= 1<<5;				 //接收缓冲区非空RXNEIE中断使能
+	MY_NVIC_Init(3,1,USART1_IRQChannel,2);	 //组2最低优先级
+
+}
+
+/*******************************************************************
+* 发送函数
+* 包括8位数据，16位，字符串数据的发送函数
+********************************************************************/
+
+/*发送一个字节的数据 */
+void USART1_TXByte(u16 data)
+{
+    GPIOB->BSRR |= GPIO_Pin_5;			//set 485_ctr for TX
+
+	while (!(USART1->SR&0x0080));		//查询SR中的TXE
+	USART1->DR = (data & 0x00FF);
+	while (!(USART1->SR&0x0040));		//查询SR中的TC
+	GPIOB->BRR |= GPIO_Pin_5;
+
+}
+
+/*发送一个16位数据 */
+void USART1_TXWord(u16  data)
+{	 
+	USART1_TXByte(data/256);
+	USART1_TXByte(data%256);       //先发送高字节，后发低字节	 
+}
+
+
+/*发送一个字符串   */
+void USART1_TXStr(u8* string)
+{
+	u8* str = string;
+	while(*str != '\0')
+	{
+	    USART1_TXByte(*str++);	
+	}
+}
+
+void USART1_SendString(u8*string, u16 len)
+{
+	u16 i;
+	for(i=0; i<len; i++)
+	{	
+		USART1_TXByte(string[i]);
+	}
+}
+
+/*******************************************************************
+* 接收函数
+* 标志位检测方式 和 中断接收函数
+********************************************************************/
+
+/*标志位检测方式 串口接收数据	  */
+void USART1_RX()
+{
+    int data;
+  
+  	while ((USART1->SR & 0x0020)==0)	//若未收到数据将SR状态寄存器值发出去
+	{
+	     data = USART1->SR  ;
+         USART1_TXByte(data); 
+		 USART1_TXByte('M');
+	}	//查询SR中的RXNE
+									   //若收到数据即将其发出
+	data = USART1->DR;
+    USART1_TXByte(data);
+	USART1_TXByte('B');
+}
+
+/*接收中断 */
+void USART1_IRQHandler(void)
+{											
+	u8 t;
+
+	t = USART1->DR;		 //对USART_DR 的读操作可将RXNE标志位清零
+
+	if( recvcount < 8 )	
+	{
+		RX_BUF[recvcount] = t;
+		recvcount++;
+	}
+
+	if( recvcount == 8 )
+	{
+//		recvcmd = 1;	 //标志收到命令
+		recvcount=0;
+		RX_BUF[8]=1;	 //标志收到命令
+	}
+	 
+}
+
+/*******************************************************************
+*  功    能： 计算CRC码
+*  入口参数:  待求CRC码的数组
+*  返    回： framcrc[2]
+********************************************************************/
+u16 CalCrc( u8* msg, u8 N )
+{
+	u8 i,j,t;
+	u16 crc = 0xFFFF;
+	
+   for(i=0; i<N; i++)
+   {
+   		crc ^= (u16)msg[i];
+		for(j=0; j<8; j++)
+		{
+			t = crc & 1;
+			crc = crc >> 1;		 //右移一位
+			crc = crc & 0x7fff;	 //最高位清零
+            if (t == 1)			 //若移出的LSB为1则crc^0xa001 ,若LSB=0，crc不变
+            crc = crc ^ 0xa001;
+            crc = crc & 0xffff;
+		}
+   }
+   return crc;
+} 
+/*******************************************************************
+*  功    能：接收数据处理，包括CRC校验，命令解析，处理
+*  入口参数: 无
+*  返    回：无
+********************************************************************/
+void  Handle(u8* RX_BUF)
+{	
+	u8 reqflag;			//请求处理标志
+	u8 except;		    //异常标志（0x01,0x02,0x03,0x04）
+	u16 framcrc;			//帧校验码
+	u8 add;					//设备地址
+	u8 i;
+
+	framcrc = CalCrc(RX_BUF, 6);
+//若校验码正确，解析命令
+	if( ( RX_BUF[7]<<8 | RX_BUF[6] ) == framcrc )		
+	{
+	    add = ( (~ GPIOA->IDR) >>8 ) & 0x0000000F ;				//读设备地址
+		if ( RX_BUF[0] == add )									//地址符合
+		{
+		     reqflag=0;
+			 except =0;
+			 switch( RX_BUF[1] )							   
+			 {
+			   case 6:	if( RX_BUF[2] == 0x20 && RX_BUF[3]==0x01 )
+			          	{ reqflag = 1; break;}	   //设定温度命令请求
+						if( RX_BUF[2] == 0x20 && RX_BUF[3]==0x02 )
+						{ reqflag = 2; break;}	   //设定全节温度补偿请求
+
+						if( RX_BUF[2] == 0x20 && RX_BUF[3]>=0x10 && RX_BUF[5]<=0x1B )
+						{ reqflag = 3; break;}	   //设定各节温度补偿请求
+			   		   	else 
+						except = 0x02;
+
+						break;
+
+               case 3:  if( RX_BUF[2] == 0x21 && RX_BUF[3]==0x00 )
+			            {
+							 if( RX_BUF[4]==0 && (RX_BUF[5]&0x0F) <= 12)
+							    reqflag = 4;	   //返回温度命令请求处理
+							 else
+							    except = 0x03;	   //寄存器数量异常   
+						}
+			   		   	else 
+						except = 0x02;			   //起始地址异常
+
+						break;
+
+
+			   default:  except = 0x01;			   //功能码异常
+			 }
+		}
+	}
+//命令解析完，开始处理请求
+	switch( reqflag )
+	{
+		case 1: //处理设定温度命令
+				comptemp = RX_BUF[4]<<8 | RX_BUF[5];
+				TEMP_MIN = 	comptemp-1;
+				TEMP_MAX =	comptemp+1;
+
+				TX_BUF[0] = add;
+		        TX_BUF[1] = 0x06;
+				TX_BUF[2] = 0x20;
+				TX_BUF[3] = 0x01;
+				TX_BUF[4] = 0x01;
+				TX_BUF[5] = 0x73;
+				TX_BUF[6] = RX_BUF[6];															
+				TX_BUF[7] = RX_BUF[7];
+			    USART1_SendString(TX_BUF,8);
+				break;
+											 
+		case 2:	 //处理全节温度补偿
+				comptemp = RX_BUF[4]<<8 | RX_BUF[5];
+				for(i=0; i<16; i++)
+				{
+					Temp[i] -= comptemp*(i+1);
+				}		        
+                TX_BUF[0] = add;
+		        TX_BUF[1] = 0x06;
+				TX_BUF[2] = 0x20;
+				TX_BUF[3] = 0x02;
+				TX_BUF[4] = 0x01;
+				TX_BUF[5] = 0x73;
+				TX_BUF[6] = RX_BUF[6];															
+				TX_BUF[7] = RX_BUF[7];
+				USART1_SendString(TX_BUF, 8);
+				break;
+
+		case 3:	 //处理各节温度补偿
+				i = RX_BUF[3]&0x0F;
+				EachSegComp[i] = RX_BUF[4]<<8 | RX_BUF[5];		
+				Temp[i] -= ( EachSegComp[i]-50 );	 //无符号和有符号的差别
+
+                TX_BUF[0] = add;
+		        TX_BUF[1] = 0x06;
+				TX_BUF[2] = 0x20;
+				TX_BUF[3] = RX_BUF[3];
+				TX_BUF[4] = 0x01;
+				TX_BUF[5] = 0x73;
+				TX_BUF[6] = RX_BUF[6];															
+				TX_BUF[7] = RX_BUF[7];
+				USART1_SendString(TX_BUF, 8);
+				break;
+
+		case 4:	 //处理返回温度命令
+                TX_BUF[0] = add;
+		        TX_BUF[1] = 0x03;
+				TX_BUF[2] = RX_BUF[5]*2;
+				for(i=0,sendcount=3; i<RX_BUF[5]; i++,sendcount+=2)
+				{
+					TX_BUF[sendcount]   = Temp[i]>>8;   //注Temp为字符数组，要发送的温度是16位
+					TX_BUF[sendcount+1] = Temp[i]&0xff;
+				}
+				framcrc = CalCrc(TX_BUF,sendcount);
+				TX_BUF[sendcount++] = framcrc & 0xff;															
+				TX_BUF[sendcount++] = framcrc >> 8;
+				USART1_SendString(TX_BUF, sendcount);
+				break;
+
+		default: break;
+	}
+        if( except != 0 )
+		{
+			TX_BUF[0] = add;
+			TX_BUF[1] = RX_BUF[1] | 0x80 ;
+			TX_BUF[2] = except;	
+			framcrc   = CalCrc(TX_BUF,3);
+			TX_BUF[3] = framcrc & 0xff;															
+			TX_BUF[4] = framcrc >> 8;
+			USART1_SendString(TX_BUF,5);		
+		} 
+		
+}
+
+ 
+
+
+

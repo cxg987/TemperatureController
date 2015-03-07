@@ -1,0 +1,5 @@
+"main.obj",
+"uart.obj",
+"PWM NEW.obj" 
+TO "modbus11" 
+RAMSIZE(256) 

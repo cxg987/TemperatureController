@@ -1,0 +1,75 @@
+[Version]
+Signature="$CHICAGO$"
+Class=USB
+provider=%PHILIPS%
+LayoutFile=layout.inf
+
+[SourceDisksNames]
+1="IsoUsb Installation Disk",,0
+
+[SourceDisksFiles]
+PhKit.sys = 1
+PhKit.inf = 1
+
+[Manufacturer]
+%MfgName%=PHILIPS
+
+
+[PHILIPS]
+%USB\VID_0471&PID_1582.DeviceDesc%=D14TEST.Dev, USB\VID_0471&PID_1582
+%USB\VID_0471&PID_0881.DeviceDesc%=D14TEST.Dev, USB\VID_0471&PID_0881
+%USB\VID_04cc&PID_1b41.DeviceDesc%=D14TEST.Dev, USB\VID_04cc&PID_1b41
+%USB\VID_04cc&PID_1b49.DeviceDesc%=D14TEST.Dev, USB\VID_04cc&PID_1b49
+%USB\VID_0471&PID_1552.DeviceDesc%=D14TEST.Dev, USB\VID_0471&PID_1552
+[PreCopySection]
+HKR,,NoSetupUI,,1
+
+[DestinationDirs]
+D14TEST.Files.Ext = 10,System32\Drivers
+D14TEST.Files.Inf = 10,INF
+
+[D14TEST.Dev]
+CopyFiles=D14TEST.Files.Ext, D14TEST.Files.Inf
+AddReg=D14TEST.AddReg
+
+[D14TEST.Dev.NT]
+CopyFiles=D14TEST.Files.Ext, D14TEST.Files.Inf
+AddReg=D14TEST.AddReg
+
+[D14TEST.Dev.NT.Services]
+Addservice = D14TEST, 0x00000002, D14TEST.AddService
+
+[D14TEST.AddService]
+DisplayName    = %D14TEST.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 2                  ; SERVICE_AUTO_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\PhKit.sys
+LoadOrderGroup = Base
+
+[D14TEST.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,PhKit.sys
+HKLM,"System\Currentcontrolset\Services\D14TEST\Parameters","MaximumTransferSize",0x10001,1023
+HKLM,"System\Currentcontrolset\Services\D14TEST\Parameters","DebugLevel",0x10001,2
+
+
+[D14TEST.Files.Ext]
+PhKit.sys
+
+[D14TEST.Files.Inf]
+PhKit.Inf
+
+
+;---------------------------------------------------------------;
+
+[Strings]
+PHILIPS="PHILIPS"
+MfgName="PHILIPS"
+USB\VID_0471&PID_1581.DeviceDesc="PHILIPS isp1581 linux KIT"
+USB\VID_04cc&PID_1b41.DeviceDesc="PHILIPS isp1581 New KIT"
+USB\VID_0471&PID_0881.DeviceDesc="PHILIPS ISP1581 TWIN TEST KIT"
+USB\VID_04cc&PID_1b49.DeviceDesc="PHILIPS isp1581 Scanner KIT"
+USB\VID_0471&PID_1552.DeviceDesc="PHILIPS isp1581 video KIT"
+D14TEST.SvcDesc="PDIUSBD14 Isochronous IO test driver"
+

@@ -1,0 +1,23 @@
+*** Creating Trace Output File '.\Obj\test11.tra' Ok.
+### Preparing for ADS-LD.
+### Creating ADS-LD Command Line
+### List of Objects: adding '".\obj\stm32f10x.o"'
+### List of Objects: adding '".\obj\delay.o"'
+### List of Objects: adding '".\obj\sys.o"'
+### List of Objects: adding '".\obj\led.o"'
+### List of Objects: adding '".\obj\main.o"'
+### ADS-LD Command completed:
+--cpu Cortex-M3 ".\obj\stm32f10x.o" ".\obj\delay.o" ".\obj\sys.o" ".\obj\led.o" ".\obj\main.o" --strict --scatter ".\Obj\test11.sct" 
+--autoat --summary_stderr --info summarysizes --map --xref --callgraph --symbols 
+--info sizes --info totals --info unused --info veneers 
+ --list ".\Lis\test11.map" -o ".\Obj\test11.axf"### Preparing Environment (PrepEnvAds)
+### ADS-LD Output File: '.\Obj\test11.axf'
+### ADS-LD Command File: '.\Obj\test11.lnp'
+### Checking for dirty Components...
+### Creating CmdFile '.\Obj\test11.lnp', Handle=0x0000150C
+### Writing '.lnp' file
+### ADS-LD Command file '.\Obj\test11.lnp' is ready.
+### ADS-LD: About to start ADS-LD Thread.
+### ADS-LD: executed with 0 errors
+### Updating obj list
+### LDADS_file() completed.
